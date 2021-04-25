@@ -70,6 +70,12 @@ contract PlutusVest is Ownable {
 		vests[vestIndices[name]].receiver = _address;
     }
 
+	function setPlutusAddress(address _address) external onlyOwner {
+        require(_address != address(0x0), "invalid address");
+
+		plutusToken = IBEP20(_address);
+    }
+
 	function release() public onlyOwner {
 		for(uint i = 0 ; i < vests.length; i++) {
 			Vest storage v = vests[i];
