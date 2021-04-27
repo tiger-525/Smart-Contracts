@@ -106,8 +106,4 @@ contract PlutusVest is Ownable {
 	function plutusBalance() view public returns(uint256){
 		return plutusToken.balanceOf(address(this));
 	}
-
-	function emergencyWithdraw() public onlyOwner {
-		plutusToken.transfer(msg.sender, plutusBalance());
-	}
 }
