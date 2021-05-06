@@ -13,11 +13,11 @@ async function main () {
 
   let plutusTokenAddress = "0x663b92A7eac229A7EE8290B10dC17463bFf206a7";
   let nftTokenAddress = "0xd65F17975845340B1D6b049cfA698578E62B289d";
-  let plutusSwapAddress = "";
+  let plutusSwapAddress = "0x784243535168E23DfFA3EcCCCdc63E831E9Fe24F";
   let deployFlag = {
     deployAlturaToken: false,
-    deployAlturaSwap: true,
-    upgradeAlturaSwap: false,
+    deployAlturaSwap: false,
+    upgradeAlturaSwap: true,
   };
 
   /**
@@ -52,42 +52,27 @@ async function main () {
       signer: (await ethers.getSigners())[0]
     })
   
-    const swapContract = await upgrades.deployProxy(PlutusSwap, [plutusTokenAddress, nftTokenAddress, '0xc2A79DdAF7e95C141C20aa1B10F3411540562FF7']);
+    const swapContract = await upgrades.deployProxy(PlutusSwap, 
+      [plutusTokenAddress, nftTokenAddress, '0xc2A79DdAF7e95C141C20aa1B10F3411540562FF7'],
+      {initializer: 'initialize',kind: 'uups'});
     await swapContract.deployed()
   
     console.log('Altura NFT Swap deployed to:', swapContract.address)
     plutusSwapAddress = swapContract.address;
-    
-    await sleep(60);
-    await hre.run("verify:verify", {
-      address: swapContract.address,
-      contract: "contracts/AlturaNFTSwap.sol:AlturaNFTSwap",
-      constructorArguments: [plutusTokenAddress, nftTokenAddress, '0xc2A79DdAF7e95C141C20aa1B10F3411540562FF7'],
-    })
-  
-    console.log('Altura Swap Contract verified')
   } 
 
   /**
    *  Upgrade AlturaNFT Swap
    */
   if(deployFlag.upgradeAlturaSwap) {
-    const PlutusSwapV2 = await ethers.getContractFactory('AlturaNFTSwapV2', {
+    const PlutusSwapV2 = await ethers.getContractFactory('AlturaNFTSwap', {
       signer: (await ethers.getSigners())[0]
     })
   
-    const swapContractV2 = await upgrades.upgradeProxy(plutusSwapAddress, PlutusSwapV2);
+    await upgrades.upgradeProxy(plutusSwapAddress, PlutusSwapV2);
 
-    console.log('Altura NFT Swap V2 upgraded to:', swapContractV2)
+    console.log('Altura NFT Swap V2 upgraded')
     
-    // await sleep(60);
-    // await hre.run("verify:verify", {
-    //   address: swapContractV2.address,
-    //   contract: "contracts/AlturaNFTSwap.sol:AlturaNFTSwap",
-    //   constructorArguments: [plutusTokenAddress, nftTokenAddress, '0xc2A79DdAF7e95C141C20aa1B10F3411540562FF7'],
-    // })
-  
-    console.log('Altura Swap Contract V2 verified')
   }
 }
 

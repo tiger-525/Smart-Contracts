@@ -4,7 +4,6 @@ require("@nomiclabs/hardhat-etherscan");
 require('@openzeppelin/hardhat-upgrades');
 
 module.exports = {
-  solidity: "0.8.2",
   networks: {
     testnet: {
       url: process.env.NODE_URL,
@@ -17,7 +16,7 @@ module.exports = {
         version: '0.5.16'
       },
       {
-        version: '0.8.2',
+        version: '0.8.4',
         settings: {
           optimizer: {
             enabled: true,

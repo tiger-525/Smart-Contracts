@@ -1,12 +1,13 @@
 // Altura - NFT Swap contract
 // SPDX-License-Identifier: MIT 
-pragma solidity ^0.8.2;
+pragma solidity ^0.8.4;
 
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 interface IAlturaNFT {
@@ -53,6 +54,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 	uint256 public swapFee;  // swap fee as percent - percent divider = 1000
 	address public feeAddress; 
 
+
 	/** Events */
     event ItemListed(uint256 id, uint256 token_id, uint256 amount, uint256 price, address creator, address owner, uint256 creatorFee);
 	event ItemDelisted(uint256 id);
@@ -61,13 +63,16 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
     event Swapped(address buyer, uint256 id, uint256 amount);
 
 	function initialize(address _altura, address _nft, address _fee) public initializer {
+		__Ownable_init();
+		__ERC1155Holder_init();
+
         alturaToken = IERC20(_altura);
         alturaNFT   = IAlturaNFT(_nft);
 		feeAddress = _fee;
 		swapFee = 20; // 2%
     }
 
-	function _authorizeUpgrade(address) internal override onlyOwner {}
+	function _authorizeUpgrade(address newImplementation) internal override {}
 
     function setalturaToken(address _address) external onlyOwner {
         require(_address != address(0x0), "invalid address");
