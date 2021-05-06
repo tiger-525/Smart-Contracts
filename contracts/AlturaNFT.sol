@@ -1,18 +1,26 @@
-// Plutus NFT token
+// Altura NFT token
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.6.0 <0.8.0;
+pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-contract PlutusNFT is ERC1155, AccessControl {
+contract AlturaNFT is ERC1155, AccessControl {
 	using SafeMath for uint256;
 	
 	bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 	uint256 constant public PERCENTS_DIVIDER = 1000;
 
-	constructor() public ERC1155("https://plutus-app-mvp.herokuapp.com/api/item/") {
+	string public name;
+	
+	function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155, AccessControl) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
+
+	constructor(string memory _name, string memory _uri) public ERC1155(_uri) {
+		name = _name;
+
 		_setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
 		_setupRole(MINTER_ROLE, msg.sender);
 	}

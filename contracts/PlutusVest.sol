@@ -1,10 +1,10 @@
 // Plutus - Vest contract
 // SPDX-License-Identifier: MIT 
 
-pragma solidity >=0.6.0 <0.8.0;
+pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./DateTimeLibrary.sol";
 
 interface IBEP20 {
