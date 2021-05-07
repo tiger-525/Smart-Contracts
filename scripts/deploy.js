@@ -12,12 +12,12 @@ async function main () {
   console.log('signer:', await signer.getAddress())
 
   let plutusTokenAddress = "0x663b92A7eac229A7EE8290B10dC17463bFf206a7";
-  let nftTokenAddress = "0xd65F17975845340B1D6b049cfA698578E62B289d";
-  let plutusSwapAddress = "0x784243535168E23DfFA3EcCCCdc63E831E9Fe24F";
+  let nftTokenAddress = "0xa0E386b51c4d7788190aEd09397929560a1845C5";
+  let plutusSwapAddress = "0xB63D84823e4FDD14ba41876Ce3E68Db531484cb6";
   let deployFlag = {
     deployAlturaToken: false,
-    deployAlturaSwap: false,
-    upgradeAlturaSwap: true,
+    deployAlturaSwap: true,
+    upgradeAlturaSwap: false,
   };
 
   /**

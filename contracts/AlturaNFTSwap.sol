@@ -5,12 +5,15 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
+import "./AlturaNFT.sol";
+
 interface IAlturaNFT {
+	function initialize(string memory _name, string memory _uri, address creator, bool bPublic) external;
 	function safeTransferFrom(address from,
 			address to,
 			uint256 id,
@@ -24,8 +27,10 @@ interface IAlturaNFT {
 
 contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgradeable {
     using SafeMath for uint256;
+	using EnumerableSet for EnumerableSet.AddressSet;
 
 	uint256 constant public PERCENTS_DIVIDER = 1000;
+	
 
     IERC20 public alturaToken;
     IAlturaNFT public alturaNFT;
@@ -33,6 +38,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
     /* Pairs to swap NFT _id => price */
 	struct Item {
 		uint256 item_id;
+		address collection;
 		uint256 token_id;
 		address creator;
 		address owner;
@@ -43,6 +49,10 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		bool bValid;
 	}
 
+	EnumerableSet.AddressSet private collections;
+	// collection address => creator address
+	mapping(address => address) public collectionCreators;
+	// token id => Item mapping
     mapping(uint256 => Item) public items;
 	uint256 public currentItemId;
     
@@ -56,20 +66,23 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 
 
 	/** Events */
-    event ItemListed(uint256 id, uint256 token_id, uint256 amount, uint256 price, address creator, address owner, uint256 creatorFee);
+    event CollectionCreated(address collection_address, string name, string uri, bool isPublic);
+    event ItemListed(uint256 id, address collection, uint256 token_id, uint256 amount, uint256 price, address creator, address owner, uint256 creatorFee);
 	event ItemDelisted(uint256 id);
-	event ItemAdded(uint256 id, uint256 amount);
+	event ItemAdded(uint256 id, uint256 amount, uint256 balance);
 
     event Swapped(address buyer, uint256 id, uint256 amount);
 
-	function initialize(address _altura, address _nft, address _fee) public initializer {
+	function initialize(address _altura, address _fee) public initializer {
 		__Ownable_init();
 		__ERC1155Holder_init();
 
         alturaToken = IERC20(_altura);
-        alturaNFT   = IAlturaNFT(_nft);
-		feeAddress = _fee;
-		swapFee = 20; // 2%
+        feeAddress = _fee;
+		swapFee = 25; // 2.5%
+
+		address _default_nft = createCollection("AlturaNFT", "https://plutus-app-mvp.herokuapp.com/api/item/", true);
+		alturaNFT = IAlturaNFT(_default_nft);
     }
 
 	function _authorizeUpgrade(address newImplementation) internal override {}
@@ -94,30 +107,44 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		swapFee = _percent;
 	}
 
-    function list(uint256 _token_id, uint256 _amount, uint256 _price, bool _bMint) public {
+	function createCollection(string memory _name, string memory _uri, bool bPublic) public returns(address collection) {
+		bytes memory bytecode = type(AlturaNFT).creationCode;
+        bytes32 salt = keccak256(abi.encodePacked(_uri, _name, block.timestamp));
+        assembly {
+            collection := create2(0, add(bytecode, 32), mload(bytecode), salt)
+        }
+        IAlturaNFT(collection).initialize(_name, _uri, msg.sender, bPublic);
+		collections.add(collection);
+		collectionCreators[collection] = msg.sender;
+
+		emit CollectionCreated(collection, _name, _uri, bPublic);
+	}
+
+    function list(address _collection, uint256 _token_id, uint256 _amount, uint256 _price, bool _bMint) public {
 		require(_price > 0, "invalid price");
 		require(_amount > 0, "invalid amount");
 
+		IAlturaNFT nft = IAlturaNFT(_collection);
 		if(_bMint) {
-			require(msg.sender == alturaNFT.creatorOf(_token_id), "only creator can mint");
-			require(alturaNFT.mint(address(this), _token_id, _amount), "mint failed");
+			require(nft.mint(address(this), _token_id, _amount), "mint failed");
 		} else {
-			require(alturaNFT.balanceOf(msg.sender, _token_id) >= _amount, "insufficient balance");
-			alturaNFT.safeTransferFrom(msg.sender, address(this), _token_id, _amount, "List");
+			nft.safeTransferFrom(msg.sender, address(this), _token_id, _amount, "List");
 		}
 
 		currentItemId = currentItemId.add(1);
 		items[currentItemId].item_id = currentItemId;
+		items[currentItemId].collection = _collection;
 		items[currentItemId].token_id = _token_id;
-		items[currentItemId].creator = alturaNFT.creatorOf(_token_id);
+		items[currentItemId].creator = nft.creatorOf(_token_id);
 		items[currentItemId].owner = msg.sender;
 		items[currentItemId].balance = _amount;
 		items[currentItemId].price = _price;
-		items[currentItemId].creatorFee = alturaNFT.creatorFee(_token_id);
+		items[currentItemId].creatorFee = nft.creatorFee(_token_id);
 		items[currentItemId].totalSold = 0;
 		items[currentItemId].bValid = true;
 
         emit ItemListed(currentItemId, 
+			_collection,
 			_token_id, 
 			_amount, 
 			_price, 
@@ -131,7 +158,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		require(items[_id].bValid, "invalid Item id");
 		require(items[_id].owner == msg.sender || msg.sender == owner(), "only owner can delist");
 
-		alturaNFT.safeTransferFrom(address(this), items[_id].owner, items[_id].token_id, items[_id].balance, "delist from Altura Marketplace");
+		IAlturaNFT(items[_id].collection).safeTransferFrom(address(this), items[_id].owner, items[_id].token_id, items[_id].balance, "delist from Altura Marketplace");
 		items[_id].balance = 0;
 		items[_id].bValid = false;
 
@@ -142,10 +169,10 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		require(items[_id].bValid, "invalid Item id");
 		require(items[_id].owner == msg.sender, "only owner can add items");
 
-		alturaNFT.safeTransferFrom(msg.sender, address(this), items[_id].token_id, _amount, "add items to Altura Marketplace");
+		IAlturaNFT(items[_id].collection).safeTransferFrom(msg.sender, address(this), items[_id].token_id, _amount, "add items to Altura Marketplace");
 		items[_id].balance = items[_id].balance.add(_amount);
 
-		emit ItemAdded(_id, _amount);
+		emit ItemAdded(_id, _amount, items[_id].balance);
 	}
     
     function buy(uint256 _id, uint256 _amount) external {

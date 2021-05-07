@@ -1,0 +1,201 @@
+{
+  "manifestVersion": "3.2",
+  "impls": {
+    "95d7a95efaaf52ce2ade22b3fc4d470317448846783926ad2ac73960748168ac": {
+      "address": "0xF54140B3317fA04798e224565834aE4AF45081C4",
+      "txHash": "0xa263df1708eba39575e37a4b7bb20ec5f3ba5c1b733fc25ac054e4d81a0ed94b",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:28"
+          },
+          {
+            "contract": "ERC1967UpgradeUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:229"
+          },
+          {
+            "contract": "UUPSUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:36"
+          },
+          {
+            "contract": "ERC165Upgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\introspection\\ERC165Upgradeable.sol:35"
+          },
+          {
+            "contract": "ERC1155ReceiverUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC1155\\utils\\ERC1155ReceiverUpgradeable.sol:27"
+          },
+          {
+            "contract": "ERC1155HolderUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC1155\\utils\\ERC1155HolderUpgradeable.sol:27"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:20"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:74"
+          },
+          {
+            "contract": "AlturaNFTSwap",
+            "label": "alturaToken",
+            "type": "t_contract(IERC20)3047",
+            "src": "contracts\\AlturaNFTSwap.sol:30"
+          },
+          {
+            "contract": "AlturaNFTSwap",
+            "label": "alturaNFT",
+            "type": "t_contract(IAlturaNFT)4303",
+            "src": "contracts\\AlturaNFTSwap.sol:31"
+          },
+          {
+            "contract": "AlturaNFTSwap",
+            "label": "items",
+            "type": "t_mapping(t_uint256,t_struct(Item)4340_storage)",
+            "src": "contracts\\AlturaNFTSwap.sol:46"
+          },
+          {
+            "contract": "AlturaNFTSwap",
+            "label": "currentItemId",
+            "type": "t_uint256",
+            "src": "contracts\\AlturaNFTSwap.sol:47"
+          },
+          {
+            "contract": "AlturaNFTSwap",
+            "label": "totalSold",
+            "type": "t_uint256",
+            "src": "contracts\\AlturaNFTSwap.sol:49"
+          },
+          {
+            "contract": "AlturaNFTSwap",
+            "label": "totalEarning",
+            "type": "t_uint256",
+            "src": "contracts\\AlturaNFTSwap.sol:50"
+          },
+          {
+            "contract": "AlturaNFTSwap",
+            "label": "totalSwapped",
+            "type": "t_uint256",
+            "src": "contracts\\AlturaNFTSwap.sol:51"
+          },
+          {
+            "contract": "AlturaNFTSwap",
+            "label": "swapFee",
+            "type": "t_uint256",
+            "src": "contracts\\AlturaNFTSwap.sol:54"
+          },
+          {
+            "contract": "AlturaNFTSwap",
+            "label": "feeAddress",
+            "type": "t_address",
+            "src": "contracts\\AlturaNFTSwap.sol:55"
+          }
+        ],
+        "types": {
+          "t_contract(IERC20)3047": {
+            "label": "contract IERC20"
+          },
+          "t_contract(IAlturaNFT)4303": {
+            "label": "contract IAlturaNFT"
+          },
+          "t_mapping(t_uint256,t_struct(Item)4340_storage)": {
+            "label": "mapping(uint256 => struct AlturaNFTSwap.Item)"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_struct(Item)4340_storage": {
+            "label": "struct AlturaNFTSwap.Item",
+            "members": [
+              {
+                "label": "item_id",
+                "type": "t_uint256"
+              },
+              {
+                "label": "token_id",
+                "type": "t_uint256"
+              },
+              {
+                "label": "creator",
+                "type": "t_address"
+              },
+              {
+                "label": "owner",
+                "type": "t_address"
+              },
+              {
+                "label": "balance",
+                "type": "t_uint256"
+              },
+              {
+                "label": "price",
+                "type": "t_uint256"
+              },
+              {
+                "label": "creatorFee",
+                "type": "t_uint256"
+              },
+              {
+                "label": "totalSold",
+                "type": "t_uint256"
+              },
+              {
+                "label": "bValid",
+                "type": "t_bool"
+              }
+            ]
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    }
+  },
+  "proxies": [
+    {
+      "address": "0xB63D84823e4FDD14ba41876Ce3E68Db531484cb6",
+      "kind": "uups",
+      "txHash": "0x8a5c2d9e60f1a90ec729079ea53452c97b9f6101801fa794c3f1b4c993e04e83"
+    }
+  ]
+}
