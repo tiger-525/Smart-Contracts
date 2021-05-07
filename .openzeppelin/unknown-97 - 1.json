@@ -1,9 +1,9 @@
 {
   "manifestVersion": "3.2",
   "impls": {
-    "d3b873f440e76cb7725fe1dd1094191c44aa11382d411d431f9caff4d23d8add": {
-      "address": "0xe0147dB41e0b65560a0d77AC2B46E96280Bc5dCD",
-      "txHash": "0x1f807628efd0b5df39cf449f5dbf6054e4944a0582b40bf8fa79237d56520a0d",
+    "95d7a95efaaf52ce2ade22b3fc4d470317448846783926ad2ac73960748168ac": {
+      "address": "0xF54140B3317fA04798e224565834aE4AF45081C4",
+      "txHash": "0xa263df1708eba39575e37a4b7bb20ec5f3ba5c1b733fc25ac054e4d81a0ed94b",
       "layout": {
         "storage": [
           {
@@ -70,101 +70,76 @@
             "contract": "AlturaNFTSwap",
             "label": "alturaToken",
             "type": "t_contract(IERC20)3047",
-            "src": "contracts\\AlturaNFTSwap.sol:35"
+            "src": "contracts\\AlturaNFTSwap.sol:30"
           },
           {
             "contract": "AlturaNFTSwap",
             "label": "alturaNFT",
-            "type": "t_contract(IAlturaNFT)4912",
-            "src": "contracts\\AlturaNFTSwap.sol:36"
-          },
-          {
-            "contract": "AlturaNFTSwap",
-            "label": "collections",
-            "type": "t_array(t_address)dyn_storage",
-            "src": "contracts\\AlturaNFTSwap.sol:52"
-          },
-          {
-            "contract": "AlturaNFTSwap",
-            "label": "collectionCreators",
-            "type": "t_mapping(t_address,t_address)",
-            "src": "contracts\\AlturaNFTSwap.sol:54"
+            "type": "t_contract(IAlturaNFT)4303",
+            "src": "contracts\\AlturaNFTSwap.sol:31"
           },
           {
             "contract": "AlturaNFTSwap",
             "label": "items",
-            "type": "t_mapping(t_uint256,t_struct(Item)4955_storage)",
-            "src": "contracts\\AlturaNFTSwap.sol:56"
+            "type": "t_mapping(t_uint256,t_struct(Item)4340_storage)",
+            "src": "contracts\\AlturaNFTSwap.sol:46"
           },
           {
             "contract": "AlturaNFTSwap",
             "label": "currentItemId",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTSwap.sol:57"
+            "src": "contracts\\AlturaNFTSwap.sol:47"
           },
           {
             "contract": "AlturaNFTSwap",
             "label": "totalSold",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTSwap.sol:59"
+            "src": "contracts\\AlturaNFTSwap.sol:49"
           },
           {
             "contract": "AlturaNFTSwap",
             "label": "totalEarning",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTSwap.sol:60"
+            "src": "contracts\\AlturaNFTSwap.sol:50"
           },
           {
             "contract": "AlturaNFTSwap",
             "label": "totalSwapped",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTSwap.sol:61"
+            "src": "contracts\\AlturaNFTSwap.sol:51"
           },
           {
             "contract": "AlturaNFTSwap",
             "label": "swapFee",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTSwap.sol:64"
+            "src": "contracts\\AlturaNFTSwap.sol:54"
           },
           {
             "contract": "AlturaNFTSwap",
             "label": "feeAddress",
             "type": "t_address",
-            "src": "contracts\\AlturaNFTSwap.sol:65"
+            "src": "contracts\\AlturaNFTSwap.sol:55"
           }
         ],
         "types": {
           "t_contract(IERC20)3047": {
             "label": "contract IERC20"
           },
-          "t_contract(IAlturaNFT)4912": {
+          "t_contract(IAlturaNFT)4303": {
             "label": "contract IAlturaNFT"
           },
-          "t_array(t_address)dyn_storage": {
-            "label": "address[]"
-          },
-          "t_address": {
-            "label": "address"
-          },
-          "t_mapping(t_address,t_address)": {
-            "label": "mapping(address => address)"
-          },
-          "t_mapping(t_uint256,t_struct(Item)4955_storage)": {
+          "t_mapping(t_uint256,t_struct(Item)4340_storage)": {
             "label": "mapping(uint256 => struct AlturaNFTSwap.Item)"
           },
           "t_uint256": {
             "label": "uint256"
           },
-          "t_struct(Item)4955_storage": {
+          "t_struct(Item)4340_storage": {
             "label": "struct AlturaNFTSwap.Item",
             "members": [
               {
                 "label": "item_id",
                 "type": "t_uint256"
-              },
-              {
-                "label": "collection",
-                "type": "t_address"
               },
               {
                 "label": "token_id",
@@ -200,6 +175,9 @@
               }
             ]
           },
+          "t_address": {
+            "label": "address"
+          },
           "t_bool": {
             "label": "bool"
           },
@@ -215,9 +193,9 @@
   },
   "proxies": [
     {
-      "address": "0x38E95BD5e9b7eB92628Ee7Ee016fe12509eC18d5",
+      "address": "0xB63D84823e4FDD14ba41876Ce3E68Db531484cb6",
       "kind": "uups",
-      "txHash": "0xdec96edd59bef0eb8a4a44dde0358001f5c4fe7e30ea889c2b601a19543bb739"
+      "txHash": "0x8a5c2d9e60f1a90ec729079ea53452c97b9f6101801fa794c3f1b4c993e04e83"
     }
   ]
 }

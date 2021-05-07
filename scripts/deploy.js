@@ -53,7 +53,7 @@ async function main () {
     })
   
     const swapContract = await upgrades.deployProxy(PlutusSwap, 
-      [plutusTokenAddress, nftTokenAddress, '0xc2A79DdAF7e95C141C20aa1B10F3411540562FF7'],
+      [plutusTokenAddress, '0xc2A79DdAF7e95C141C20aa1B10F3411540562FF7'],
       {initializer: 'initialize',kind: 'uups'});
     await swapContract.deployed()
   

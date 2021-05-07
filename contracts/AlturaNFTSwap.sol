@@ -49,7 +49,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		bool bValid;
 	}
 
-	EnumerableSet.AddressSet private collections;
+	address[] public collections;
 	// collection address => creator address
 	mapping(address => address) public collectionCreators;
 	// token id => Item mapping
@@ -114,7 +114,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
             collection := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
         IAlturaNFT(collection).initialize(_name, _uri, msg.sender, bPublic);
-		collections.add(collection);
+		collections.push(collection);
 		collectionCreators[collection] = msg.sender;
 
 		emit CollectionCreated(collection, _name, _uri, bPublic);
