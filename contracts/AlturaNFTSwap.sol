@@ -66,7 +66,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 
 
 	/** Events */
-    event CollectionCreated(address collection_address, string name, string uri, bool isPublic);
+    event CollectionCreated(address collection_address, address owner, string name, string uri, bool isPublic);
     event ItemListed(uint256 id, address collection, uint256 token_id, uint256 amount, uint256 price, address creator, address owner, uint256 creatorFee);
 	event ItemDelisted(uint256 id);
 	event ItemAdded(uint256 id, uint256 amount, uint256 balance);
@@ -117,7 +117,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		collections.push(collection);
 		collectionCreators[collection] = msg.sender;
 
-		emit CollectionCreated(collection, _name, _uri, bPublic);
+		emit CollectionCreated(collection, msg.sender, _name, _uri, bPublic);
 	}
 
     function list(address _collection, uint256 _token_id, uint256 _amount, uint256 _price, bool _bMint) public {
