@@ -2,8 +2,8 @@
   "manifestVersion": "3.2",
   "impls": {
     "5c4746f50c6cd216bea91674c96fe83d553d50c5355fe0b965d40cb880a38452": {
-      "address": "0x9620fbf97E5117BfAd11398f084B2c459A37c066",
-      "txHash": "0xd43cd7bd9deba1acd80af7c1359ca0f5dab457d121a2599db9cf5b31d66a61ba",
+      "address": "0xBc0F445eBd790D6Dc1C0Fdc0A3Fe66A8141D77d3",
+      "txHash": "0xf557689fdaefd009aa61bdccf4507fabd43f79b2b5eadd3a6700f2c17d6ec4c8",
       "layout": {
         "storage": [
           {
@@ -75,7 +75,7 @@
           {
             "contract": "AlturaNFTSwap",
             "label": "alturaNFT",
-            "type": "t_contract(IAlturaNFT)4912",
+            "type": "t_contract(IAlturaNFT)5107",
             "src": "contracts\\AlturaNFTSwap.sol:36"
           },
           {
@@ -93,7 +93,7 @@
           {
             "contract": "AlturaNFTSwap",
             "label": "items",
-            "type": "t_mapping(t_uint256,t_struct(Item)4955_storage)",
+            "type": "t_mapping(t_uint256,t_struct(Item)5150_storage)",
             "src": "contracts\\AlturaNFTSwap.sol:56"
           },
           {
@@ -137,7 +137,7 @@
           "t_contract(IERC20)3047": {
             "label": "contract IERC20"
           },
-          "t_contract(IAlturaNFT)4912": {
+          "t_contract(IAlturaNFT)5107": {
             "label": "contract IAlturaNFT"
           },
           "t_array(t_address)dyn_storage": {
@@ -149,13 +149,13 @@
           "t_mapping(t_address,t_address)": {
             "label": "mapping(address => address)"
           },
-          "t_mapping(t_uint256,t_struct(Item)4955_storage)": {
+          "t_mapping(t_uint256,t_struct(Item)5150_storage)": {
             "label": "mapping(uint256 => struct AlturaNFTSwap.Item)"
           },
           "t_uint256": {
             "label": "uint256"
           },
-          "t_struct(Item)4955_storage": {
+          "t_struct(Item)5150_storage": {
             "label": "struct AlturaNFTSwap.Item",
             "members": [
               {
@@ -215,9 +215,9 @@
   },
   "proxies": [
     {
-      "address": "0x0D70c4c80F942038Fc7a67ac03FF2D29BBe3af43",
+      "address": "0x5C313b83F9154E6Bc829edf06329673D8407b181",
       "kind": "uups",
-      "txHash": "0xbff3e6584feb3fe957a2b703a5418c920b35f8f057430ff9d090c35709b1908c"
+      "txHash": "0x39f0a337f800f075e910fa08ffc1f4bc4455e70608e1fc121acc37fa945065cb"
     }
   ]
 }
