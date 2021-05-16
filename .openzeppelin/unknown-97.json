@@ -1,9 +1,9 @@
 {
   "manifestVersion": "3.2",
   "impls": {
-    "5c4746f50c6cd216bea91674c96fe83d553d50c5355fe0b965d40cb880a38452": {
-      "address": "0xBc0F445eBd790D6Dc1C0Fdc0A3Fe66A8141D77d3",
-      "txHash": "0xf557689fdaefd009aa61bdccf4507fabd43f79b2b5eadd3a6700f2c17d6ec4c8",
+    "2122bc46d4456c99dca526f665a280f4e0df80f7a1ca55baf2b607c8b32d101f": {
+      "address": "0x84f5eCe672DDa1a9e135257d76EA94aa392e8828",
+      "txHash": "0x488a5a1bb41f2a3886fb0ad8f1c542320b68ce8f1139e396a96f5fac13a131f0",
       "layout": {
         "storage": [
           {
@@ -215,9 +215,9 @@
   },
   "proxies": [
     {
-      "address": "0x5C313b83F9154E6Bc829edf06329673D8407b181",
+      "address": "0xE8Da7037f5F59C2806A24b61f931b6a865dA3179",
       "kind": "uups",
-      "txHash": "0x39f0a337f800f075e910fa08ffc1f4bc4455e70608e1fc121acc37fa945065cb"
+      "txHash": "0xcb92617d667a48a6f0a01b1d31f7866dcc951af470baf5355e94b208f7c14ae2"
     }
   ]
 }

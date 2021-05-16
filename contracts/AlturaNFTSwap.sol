@@ -195,7 +195,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		require(alturaToken.transferFrom(msg.sender, item.owner, plutusAmount.mul(ownerPercent).div(PERCENTS_DIVIDER)), "failed to transfer to owner");
 
 		// transfer NFT token to buyer
-		alturaNFT.safeTransferFrom(address(this), msg.sender, item.token_id, _amount, "buy from Altura Marketplace");
+		IAlturaNFT(items[_id].collection).safeTransferFrom(address(this), msg.sender, item.token_id, _amount, "buy from Altura Marketplace");
 
 		items[_id].balance = items[_id].balance.sub(_amount);
 		items[_id].totalSold = items[_id].totalSold.add(_amount);

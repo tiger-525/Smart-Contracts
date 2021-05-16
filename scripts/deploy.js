@@ -11,13 +11,13 @@ async function main () {
   const signer = (await ethers.getSigners())[0]
   console.log('signer:', await signer.getAddress())
 
-  let plutusTokenAddress = "0x663b92A7eac229A7EE8290B10dC17463bFf206a7";
+  let plutusTokenAddress = "0x1C20d2b2F46916DDA8c4fAea6aeE15b4437f39eC";
   let nftTokenAddress = "0xa0E386b51c4d7788190aEd09397929560a1845C5";
   let plutusSwapAddress = "0xB63D84823e4FDD14ba41876Ce3E68Db531484cb6";
   let deployFlag = {
-    deployAluturaFaucet: false,
+    deployAluturaFaucet: true,
     deployAlturaToken: false,
-    deployAlturaSwap: true,
+    deployAlturaSwap: false,
     upgradeAlturaSwap: false,
   };
 
