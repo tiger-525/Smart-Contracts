@@ -30,6 +30,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 	using EnumerableSet for EnumerableSet.AddressSet;
 
 	uint256 constant public PERCENTS_DIVIDER = 1000;
+	uint256 constant public FEE_MAX_PERCENT = 300;
 	
 
     IERC20 public alturaToken;
@@ -69,7 +70,9 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
     event CollectionCreated(address collection_address, address owner, string name, string uri, bool isPublic);
     event ItemListed(uint256 id, address collection, uint256 token_id, uint256 amount, uint256 price, address creator, address owner, uint256 creatorFee);
 	event ItemDelisted(uint256 id);
+	event ItemPriceUpdated(uint256 id, uint256 price);
 	event ItemAdded(uint256 id, uint256 amount, uint256 balance);
+	event ItemRemoved(uint256 id, uint256 amount, uint256 balance);
 
     event Swapped(address buyer, uint256 id, uint256 amount);
 
@@ -103,7 +106,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
     }
 
 	function setSwapFeePercent(uint256 _percent) external onlyOwner {
-		require(_percent < PERCENTS_DIVIDER, "too big swap fee");
+		require(_percent < FEE_MAX_PERCENT, "too big swap fee");
 		swapFee = _percent;
 	}
 
@@ -174,7 +177,28 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 
 		emit ItemAdded(_id, _amount, items[_id].balance);
 	}
+
+	function removeItems(uint256 _id, uint256 _amount) external {
+		require(items[_id].bValid, "invalid Item id");
+		require(items[_id].owner == msg.sender, "only owner can remove items");
+		
+		IAlturaNFT(items[_id].collection).safeTransferFrom(address(this), msg.sender, items[_id].token_id, _amount, "remove items from Altura Marketplace");
+		items[_id].balance = items[_id].balance.sub(_amount, "insufficient balance of item");
+
+		emit ItemRemoved(_id, _amount, items[_id].balance);
+	}
     
+	function updatePrice(uint256 _id, uint256 _price) external {
+		require(_price > 0, "invalid new price");
+		require(items[_id].bValid, "invalid Item id");
+		require(items[_id].owner == msg.sender || msg.sender == owner(), "only owner can update price");
+
+		items[_id].price = _price;
+
+		emit ItemPriceUpdated(_id, _price);
+	}
+
+
     function buy(uint256 _id, uint256 _amount) external {
         require(items[_id].bValid, "invalid Item id");
 		require(items[_id].balance >= _amount, "insufficient NFT balance");

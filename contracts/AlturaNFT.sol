@@ -11,6 +11,7 @@ contract AlturaNFT is ERC1155, AccessControl {
 	
 	bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 	uint256 constant public PERCENTS_DIVIDER = 1000;
+	uint256 constant public FEE_MAX_PERCENT = 300;
 
 	string  public name;
 	bool    public isPublic;
@@ -75,7 +76,7 @@ contract AlturaNFT is ERC1155, AccessControl {
 		require(hasRole(MINTER_ROLE, msg.sender) || isPublic, "Only minter can add item");
 		require(maxSupply > 0, "Maximum supply can not be 0");
 		require(supply <= maxSupply, "Supply can not be greater than Maximum supply");
-		require(_fee < PERCENTS_DIVIDER, "Too big creator fee");
+		require(_fee < FEE_MAX_PERCENT, "Too big creator fee");
 		
 		items = items.add(1);
 		totalSupply[items] = maxSupply;
