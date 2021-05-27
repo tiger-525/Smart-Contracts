@@ -198,8 +198,19 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		emit ItemPriceUpdated(_id, _price);
 	}
 
+	function buy(uint256 _id, uint256 _amount) external {
+		_buy(_id, _amount);
+	}
+	
+	function batchBuy(uint256[] memory _ids, uint256[] memory _amounts) external {
+		require(_ids.length == _amounts.length, "ids and amounts length mismatch");
 
-    function buy(uint256 _id, uint256 _amount) external {
+		for (uint256 i = 0; i < _ids.length; ++i) {
+			_buy(_ids[i], _amounts[i]);
+        }
+	}
+
+    function _buy(uint256 _id, uint256 _amount) internal {
         require(items[_id].bValid, "invalid Item id");
 		require(items[_id].balance >= _amount, "insufficient NFT balance");
 
