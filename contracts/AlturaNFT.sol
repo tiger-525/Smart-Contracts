@@ -80,7 +80,7 @@ contract AlturaNFT is ERC1155, AccessControl {
 		
 		items = items.add(1);
 		totalSupply[items] = maxSupply;
-		circulatingSupply[items] = maxSupply;
+		circulatingSupply[items] = supply;
 
 		_creators[items] = msg.sender;
 		_creatorFee[items] = _fee;
