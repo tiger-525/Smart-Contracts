@@ -33,7 +33,7 @@ contract AlturaNFT is ERC1155, AccessControl {
 	/**
 		Initialize from Swap contract
 	 */
-	function initialize(string memory _name, string memory _uri, address creator, address[] memory minters, bool bPublic) external {
+	function initialize(string memory _name, string memory _uri, address creator, bool bPublic) external {
 		require(msg.sender == factory, 'Only for factory');
 		_setURI(_uri);
 		name = _name;
@@ -42,10 +42,6 @@ contract AlturaNFT is ERC1155, AccessControl {
 
 		_setupRole(DEFAULT_ADMIN_ROLE, owner);
 		_setupRole(MINTER_ROLE, owner);
-
-		for(uint i = 0; i < minters.length; i++) {
-			_setupRole(MINTER_ROLE, minters[i]);
-		}
 	}
 
 	function supportsInterface(bytes4 interfaceId) public view virtual override(ERC1155, AccessControl) returns (bool) {

@@ -13,7 +13,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./AlturaNFT.sol";
 
 interface IAlturaNFT {
-	function initialize(string memory _name, string memory _uri, address creator, address[] memory minters, bool bPublic) external;
+	function initialize(string memory _name, string memory _uri, address creator, bool bPublic) external;
 	function safeTransferFrom(address from,
 			address to,
 			uint256 id,
@@ -84,8 +84,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
         feeAddress = _fee;
 		swapFee = 25; // 2.5%
 
-		address[] memory minters;
-		address _default_nft = createCollection("AlturaNFT", "https://plutus-app-mvp.herokuapp.com/api/item/", minters, true);
+		address _default_nft = createCollection("AlturaNFT", "https://plutus-app-mvp.herokuapp.com/api/item/", true);
 		alturaNFT = IAlturaNFT(_default_nft);
     }
 
@@ -111,13 +110,13 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		swapFee = _percent;
 	}
 
-	function createCollection(string memory _name, string memory _uri, address[] memory minters, bool bPublic) public returns(address collection) {
+	function createCollection(string memory _name, string memory _uri, bool bPublic) public returns(address collection) {
 		bytes memory bytecode = type(AlturaNFT).creationCode;
         bytes32 salt = keccak256(abi.encodePacked(_uri, _name, block.timestamp));
         assembly {
             collection := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
-        IAlturaNFT(collection).initialize(_name, _uri, msg.sender, minters, bPublic);
+        IAlturaNFT(collection).initialize(_name, _uri, msg.sender, bPublic);
 		collections.push(collection);
 		collectionCreators[collection] = msg.sender;
 
