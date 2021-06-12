@@ -20,6 +20,7 @@ contract AlturaNFT is ERC1155, AccessControl {
 	address public owner;
 
 	event ItemAdded(uint256 id, uint256 maxSupply, uint256 supply);
+	event ItemsAdded(uint256 from, uint256 count, uint256 supply);
 
 	mapping(uint256 => address) private _creators;
 	mapping(uint256 => uint256) private _creatorFee;  
@@ -91,6 +92,28 @@ contract AlturaNFT is ERC1155, AccessControl {
 
 		emit ItemAdded(items, maxSupply, supply);
 		return items;
+	}
+
+	/**
+		Create Multiple Cards - Only Minters
+	 */
+	function addItems(uint256 count, uint256 _fee) public {
+		require(hasRole(MINTER_ROLE, msg.sender) || isPublic, "Only minter can add item");
+		require(count > 0, "Item cound can not be 0");
+		require(_fee < FEE_MAX_PERCENT, "Too big creator fee");
+
+		uint256 from = items.add(1);
+		for(uint i = 0; i < count; i++) {
+			items = items.add(1);
+			totalSupply[items] = 1;
+			circulatingSupply[items] = 1;
+			_creators[items] = msg.sender;
+			_creatorFee[items] = _fee;
+
+			_mint(msg.sender, items, 1, "");
+		}
+
+		emit ItemsAdded(from, count, 1);
 	}
 
 	/**

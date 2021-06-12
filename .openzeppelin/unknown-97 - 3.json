@@ -1,9 +1,9 @@
 {
   "manifestVersion": "3.2",
   "impls": {
-    "15719915b23ea3c03af72664dead32bb7b397184899d4b4ecd26bef57899671c": {
-      "address": "0x787f361AD68874Af33478E22C350B967cD3f64dE",
-      "txHash": "0x633ca89bc0fe44a4c6fdee26ac92356b3c2f8b49d39550bcd9ae75daeacf6dbf",
+    "619132cf0b94807253a88d11cff7c8856088661140a2dc6cf115eeaca247c874": {
+      "address": "0x986B8388Ce9276a5768F88fD563B3c6693E27bE9",
+      "txHash": "0xdfad520aecccf27f584c53183fe92af222a3ba99a220c4e4137fc41a49d046da",
       "layout": {
         "storage": [
           {
@@ -75,7 +75,7 @@
           {
             "contract": "AlturaNFTSwap",
             "label": "alturaNFT",
-            "type": "t_contract(IAlturaNFT)5217",
+            "type": "t_contract(IAlturaNFT)5110",
             "src": "contracts\\AlturaNFTSwap.sol:37"
           },
           {
@@ -93,7 +93,7 @@
           {
             "contract": "AlturaNFTSwap",
             "label": "items",
-            "type": "t_mapping(t_uint256,t_struct(Item)5263_storage)",
+            "type": "t_mapping(t_uint256,t_struct(Item)5156_storage)",
             "src": "contracts\\AlturaNFTSwap.sol:57"
           },
           {
@@ -137,7 +137,7 @@
           "t_contract(IERC20)3047": {
             "label": "contract IERC20"
           },
-          "t_contract(IAlturaNFT)5217": {
+          "t_contract(IAlturaNFT)5110": {
             "label": "contract IAlturaNFT"
           },
           "t_array(t_address)dyn_storage": {
@@ -149,13 +149,13 @@
           "t_mapping(t_address,t_address)": {
             "label": "mapping(address => address)"
           },
-          "t_mapping(t_uint256,t_struct(Item)5263_storage)": {
+          "t_mapping(t_uint256,t_struct(Item)5156_storage)": {
             "label": "mapping(uint256 => struct AlturaNFTSwap.Item)"
           },
           "t_uint256": {
             "label": "uint256"
           },
-          "t_struct(Item)5263_storage": {
+          "t_struct(Item)5156_storage": {
             "label": "struct AlturaNFTSwap.Item",
             "members": [
               {
@@ -215,9 +215,9 @@
   },
   "proxies": [
     {
-      "address": "0x07D1D0b7500A8b9C057C516176984D4f19d4AD91",
+      "address": "0x6Ad7c4ad5cF48e3e6b1aF5b6A62B1C9AAa86BBC5",
       "kind": "uups",
-      "txHash": "0xb971eeba7fd7e60358a65dd66e18d0e5b2967544e47f02f8461a3e4e7114ce87"
+      "txHash": "0x4b194d543a2f684411e4d70dca340e7edf4fcc7381c59b7f65fa4aa37ec32947"
     }
   ]
 }
