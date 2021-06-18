@@ -2,8 +2,8 @@
   "manifestVersion": "3.2",
   "impls": {
     "15719915b23ea3c03af72664dead32bb7b397184899d4b4ecd26bef57899671c": {
-      "address": "0x787f361AD68874Af33478E22C350B967cD3f64dE",
-      "txHash": "0x633ca89bc0fe44a4c6fdee26ac92356b3c2f8b49d39550bcd9ae75daeacf6dbf",
+      "address": "0x09641b74BB1f6Cd06892326843Cface8BF53005f",
+      "txHash": "0xc8362e76d370965e4e8bf361a5ff50c6a7751185e3b47a6c339512bfa55d8d37",
       "layout": {
         "storage": [
           {
@@ -211,13 +211,309 @@
           }
         }
       }
+    },
+    "2653108ebd5809d5d788cbda5f909d2da2dc8075dc84753bf4fca3ef88596b26": {
+      "address": "0x04b0DAEf0175835d9746e3e24192FE2f83F804C9",
+      "txHash": "0xef17c85bf0b6f473a89b4e3d09b537a7f571f073a218b6ee6a4e5b4e706c2511",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:28"
+          },
+          {
+            "contract": "ERC1967UpgradeUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:229"
+          },
+          {
+            "contract": "UUPSUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:36"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:20"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:74"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "creatingFee",
+            "type": "t_uint256",
+            "src": "contracts\\AlturaLootboxFactory.sol:17"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "feeAddress",
+            "type": "t_address",
+            "src": "contracts\\AlturaLootboxFactory.sol:18"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "boxes",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "contracts\\AlturaLootboxFactory.sol:20"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "boxCreators",
+            "type": "t_mapping(t_address,t_address)",
+            "src": "contracts\\AlturaLootboxFactory.sol:22"
+          }
+        ],
+        "types": {
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          },
+          "t_bool": {
+            "label": "bool"
+          }
+        }
+      }
+    },
+    "3335b62ca1e9268b8cd2eb7c71eafd4e3d3930ffcd47afa4c7cf1129f10456a9": {
+      "address": "0xED255B4e49ea90d7D9Eb5adb7084BD035f1D6119",
+      "txHash": "0x44dd948e18eb64062ac594c6252fb52f97e034630d244b83240ddb82eaae602e",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:28"
+          },
+          {
+            "contract": "ERC1967UpgradeUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:229"
+          },
+          {
+            "contract": "UUPSUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:36"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:20"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:74"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "creatingFee",
+            "type": "t_uint256",
+            "src": "contracts\\AlturaLootboxFactory.sol:17"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "feeAddress",
+            "type": "t_address",
+            "src": "contracts\\AlturaLootboxFactory.sol:18"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "boxes",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "contracts\\AlturaLootboxFactory.sol:20"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "boxCreators",
+            "type": "t_mapping(t_address,t_address)",
+            "src": "contracts\\AlturaLootboxFactory.sol:22"
+          }
+        ],
+        "types": {
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          },
+          "t_bool": {
+            "label": "bool"
+          }
+        }
+      }
+    },
+    "60e22a9598e43f88f296f8e2a9a4810816291363b975ecc7de58b151dda76f52": {
+      "address": "0x7F0D5aAde0F182307515519433453dd713Be40e7",
+      "txHash": "0x05c4b4ddfe23679906acce2f4f77dc551506389527f1434a4b4e6cdc5396bc6a",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:23"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:28"
+          },
+          {
+            "contract": "ERC1967UpgradeUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:229"
+          },
+          {
+            "contract": "UUPSUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:36"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:20"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:74"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "creatingFee",
+            "type": "t_uint256",
+            "src": "contracts\\AlturaLootboxFactory.sol:17"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "feeAddress",
+            "type": "t_address",
+            "src": "contracts\\AlturaLootboxFactory.sol:18"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "boxes",
+            "type": "t_array(t_address)dyn_storage",
+            "src": "contracts\\AlturaLootboxFactory.sol:20"
+          },
+          {
+            "contract": "AlturaLootboxFactory",
+            "label": "boxCreators",
+            "type": "t_mapping(t_address,t_address)",
+            "src": "contracts\\AlturaLootboxFactory.sol:22"
+          }
+        ],
+        "types": {
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          },
+          "t_bool": {
+            "label": "bool"
+          }
+        }
+      }
     }
   },
   "proxies": [
     {
-      "address": "0x07D1D0b7500A8b9C057C516176984D4f19d4AD91",
+      "address": "0x92a76d478F501e899F0325d36759e86fc9ce1600",
       "kind": "uups",
-      "txHash": "0xb971eeba7fd7e60358a65dd66e18d0e5b2967544e47f02f8461a3e4e7114ce87"
+      "txHash": "0x8cec0413fa7620ff80dd1b687ca68b0ecbafe5229d001cd05b292255e2436755"
+    },
+    {
+      "address": "0xd539aF5200cdBc73771C560D163b9FA54D63a908",
+      "kind": "uups",
+      "txHash": "0x8a98570d7d59f9ef281e93b68da77cf61a35f40637530a30ce4e3706900ac259"
     }
   ]
 }

@@ -14,11 +14,14 @@ async function main () {
   let plutusTokenAddress = "0x1C20d2b2F46916DDA8c4fAea6aeE15b4437f39eC";
   let nftTokenAddress = "0xa0E386b51c4d7788190aEd09397929560a1845C5";
   let plutusSwapAddress = "0xE8Da7037f5F59C2806A24b61f931b6a865dA3179";
+  let plutusLootboxAddress = "0xd539aF5200cdBc73771C560D163b9FA54D63a908";
   let deployFlag = {
     deployAluturaFaucet: false,
     deployAlturaToken: false,
-    deployAlturaSwap: true,
+    deployAlturaSwap: false,
     upgradeAlturaSwap: false,
+    deployAlturaLootbox: false,
+    upgradeAlturaLootbox: true,
   };
 
 
@@ -97,6 +100,38 @@ async function main () {
     await upgrades.upgradeProxy(plutusSwapAddress, PlutusSwapV2);
 
     console.log('Altura NFT Swap V2 upgraded')
+    
+  }
+
+
+
+  /**
+   *  Deploy Altura Lootbox factory
+   */
+   if(deployFlag.deployAlturaLootbox) {
+    const PlutusLootbox = await ethers.getContractFactory('AlturaLootboxFactory', {
+      signer: (await ethers.getSigners())[0]
+    })
+  
+    const lootboxContract = await upgrades.deployProxy(PlutusLootbox, 
+      ['0xc2A79DdAF7e95C141C20aa1B10F3411540562FF7'],
+      {initializer: 'initialize',kind: 'uups'});
+    await lootboxContract.deployed()
+  
+    console.log('Altura  Lootbox deployed to:', lootboxContract.address)
+  } 
+
+  /**
+   *  Upgrade Altura Lootbox factory
+   */
+  if(deployFlag.upgradeAlturaLootbox) {
+    const PlutusLootboxV2 = await ethers.getContractFactory('AlturaLootboxFactory', {
+      signer: (await ethers.getSigners())[0]
+    })
+  
+    await upgrades.upgradeProxy(plutusLootboxAddress, PlutusLootboxV2);
+
+    console.log('Altura Lootbox factory V2 upgraded')
     
   }
 }
