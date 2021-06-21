@@ -15,6 +15,13 @@ interface IAlturaNFT {
 			uint256 id,
 			uint256 amount,
 			bytes calldata data) external;
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) external;
 	function mint(address to, uint256 id, uint256 amount) external returns(bool);
 	function balanceOf(address account, uint256 id) external view returns (uint256);
 }
@@ -88,6 +95,7 @@ contract AlturaLootbox is ERC1155Holder, VRFConsumerBase  {
     
 
     event AddToken(bytes32 key, address collectionId, uint256 tokenId, uint256 amount, uint256 cardAmount);
+    event AddTokenBatch(bytes32[] keys, address collectionId, uint256[] tokenIds, uint256[] amounts, uint256 cardAmount);
     event RemoveCard(uint256 card, uint256 removeAmount, uint256 cardAmount);
     event SpinLootbox(address account, uint256 times, uint256 playFee);
 
@@ -155,6 +163,33 @@ contract AlturaLootbox is ERC1155Holder, VRFConsumerBase  {
         }
         cardAmount = cardAmount.add(amount);
         emit AddToken(key, collection, tokenId, amount, cardAmount);
+    }
+
+    function addTokenBatch(address collection, uint256[] memory tokenIds, uint256[] memory amounts) public onlyStaff unbanned {
+        require(tokenIds.length > 0 && tokenIds.length == amounts.length, 'Invalid Token ids');
+        IAlturaNFT(collection).safeBatchTransferFrom(msg.sender, address(this), tokenIds, amounts, "Add Cards");
+        
+        bytes32[] memory keys = new bytes32[](tokenIds.length);
+        for(uint256 i = 0 ; i < tokenIds.length; i++) {
+            uint256 tokenId = tokenIds[i];
+            uint256 amount = amounts[i];
+
+            keys[i] = itemKeyFromId(collection, tokenId);
+            _cards[keys[i]].collectionId = collection;
+            _cards[keys[i]].tokenId = tokenId;
+            
+            if(amountWithId[keys[i]] == 0) {
+                _cardIndices.add(keys[i]);
+            }
+            
+            amountWithId[keys[i]] = amountWithId[keys[i]].add(amount);
+            for (uint256 j = 0; j < amount; j++) {
+                _prizePool[cardAmount + j] = keys[i];
+            }
+            cardAmount = cardAmount.add(amount);
+        }
+
+        emit AddTokenBatch(keys, collection, tokenIds, amounts, cardAmount);
     }
 
     /**
