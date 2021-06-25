@@ -23,11 +23,11 @@ contract AlturaNFT is ERC1155, AccessControl {
 	event ItemsAdded(uint256 from, uint256 count, uint256 supply);
 
 	mapping(uint256 => address) private _creators;
-	mapping(uint256 => uint256) private _creatorFee;  
+	mapping(uint256 => uint256) private _royalties;  
 	mapping(uint256 => uint256) public totalSupply;
 	mapping(uint256 => uint256) public circulatingSupply;
 
-	constructor() public  ERC1155("") {
+	constructor() public ERC1155("") {
 		factory = msg.sender;
 	}
 
@@ -84,7 +84,7 @@ contract AlturaNFT is ERC1155, AccessControl {
 		circulatingSupply[items] = supply;
 
 		_creators[items] = msg.sender;
-		_creatorFee[items] = _fee;
+		_royalties[items] = _fee;
 
 		if(supply > 0) {
 			_mint(msg.sender, items, supply, "");
@@ -108,7 +108,7 @@ contract AlturaNFT is ERC1155, AccessControl {
 			totalSupply[items] = 1;
 			circulatingSupply[items] = 1;
 			_creators[items] = msg.sender;
-			_creatorFee[items] = _fee;
+			_royalties[items] = _fee;
 
 			_mint(msg.sender, items, 1, "");
 		}
@@ -139,13 +139,14 @@ contract AlturaNFT is ERC1155, AccessControl {
 		return true;
 	}
 
+	receive() external payable {revert();}
 	
   	function creatorOf(uint256 id) public view returns (address) {
         return _creators[id];
 	}
 
-	function creatorFee(uint256 id) public view returns (uint256) {
-        return _creatorFee[id];
+	function royaltyOf(uint256 id) public view returns (uint256) {
+        return _royalties[id];
 	}
 
 	modifier onlyOwner() {

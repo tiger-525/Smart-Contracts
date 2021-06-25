@@ -78,4 +78,6 @@ contract AlturaLootboxFactory is UUPSUpgradeable, OwnableUpgradeable {
 		require(balance > 0, "insufficient balance");
 		payable(msg.sender).transfer(balance);
 	}
+
+	receive() external payable {}
 }

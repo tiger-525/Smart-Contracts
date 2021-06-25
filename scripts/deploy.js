@@ -18,9 +18,9 @@ async function main () {
   let deployFlag = {
     deployAluturaFaucet: false,
     deployAlturaToken: false,
-    deployAlturaSwap: false,
+    deployAlturaSwap: true,
     upgradeAlturaSwap: false,
-    deployAlturaLootbox: true,
+    deployAlturaLootbox: false,
     upgradeAlturaLootbox: false,
   };
 
@@ -76,7 +76,7 @@ async function main () {
    *  Deploy AlturaNFT Swap
    */
   if(deployFlag.deployAlturaSwap) {
-    const PlutusSwap = await ethers.getContractFactory('AlturaNFTSwap', {
+    const PlutusSwap = await ethers.getContractFactory('AlturaNFTFactory', {
       signer: (await ethers.getSigners())[0]
     })
   

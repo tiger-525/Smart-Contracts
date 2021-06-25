@@ -1,9 +1,9 @@
 {
   "manifestVersion": "3.2",
   "impls": {
-    "15719915b23ea3c03af72664dead32bb7b397184899d4b4ecd26bef57899671c": {
-      "address": "0x09641b74BB1f6Cd06892326843Cface8BF53005f",
-      "txHash": "0xc8362e76d370965e4e8bf361a5ff50c6a7751185e3b47a6c339512bfa55d8d37",
+    "b7d1bc14d83d0912b2d6e1c2378a66a46a061902e3eb697206d72215c9975633": {
+      "address": "0x2d13F41c0C86746d77B8a5e07f3DCB177F766F84",
+      "txHash": "0xabefef83b7a3631b4b5d24286451d7180df0ecfb1f13c03503e9f5ad34cba000",
       "layout": {
         "storage": [
           {
@@ -67,77 +67,77 @@
             "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:74"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "alturaToken",
-            "type": "t_contract(IERC20)3047",
-            "src": "contracts\\AlturaNFTSwap.sol:36"
+            "type": "t_contract(IERC20)3396",
+            "src": "contracts\\AlturaNFTFactory.sol:36"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "alturaNFT",
-            "type": "t_contract(IAlturaNFT)5217",
-            "src": "contracts\\AlturaNFTSwap.sol:37"
+            "type": "t_contract(IAlturaNFT)7662",
+            "src": "contracts\\AlturaNFTFactory.sol:37"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "collections",
             "type": "t_array(t_address)dyn_storage",
-            "src": "contracts\\AlturaNFTSwap.sol:53"
+            "src": "contracts\\AlturaNFTFactory.sol:53"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "collectionCreators",
             "type": "t_mapping(t_address,t_address)",
-            "src": "contracts\\AlturaNFTSwap.sol:55"
+            "src": "contracts\\AlturaNFTFactory.sol:55"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "items",
-            "type": "t_mapping(t_uint256,t_struct(Item)5263_storage)",
-            "src": "contracts\\AlturaNFTSwap.sol:57"
+            "type": "t_mapping(t_uint256,t_struct(Item)7708_storage)",
+            "src": "contracts\\AlturaNFTFactory.sol:57"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "currentItemId",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTSwap.sol:58"
+            "src": "contracts\\AlturaNFTFactory.sol:58"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "totalSold",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTSwap.sol:60"
+            "src": "contracts\\AlturaNFTFactory.sol:60"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "totalEarning",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTSwap.sol:61"
+            "src": "contracts\\AlturaNFTFactory.sol:61"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "totalSwapped",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTSwap.sol:62"
+            "src": "contracts\\AlturaNFTFactory.sol:62"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "swapFee",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTSwap.sol:65"
+            "src": "contracts\\AlturaNFTFactory.sol:65"
           },
           {
-            "contract": "AlturaNFTSwap",
+            "contract": "AlturaNFTFactory",
             "label": "feeAddress",
             "type": "t_address",
-            "src": "contracts\\AlturaNFTSwap.sol:66"
+            "src": "contracts\\AlturaNFTFactory.sol:66"
           }
         ],
         "types": {
-          "t_contract(IERC20)3047": {
+          "t_contract(IERC20)3396": {
             "label": "contract IERC20"
           },
-          "t_contract(IAlturaNFT)5217": {
+          "t_contract(IAlturaNFT)7662": {
             "label": "contract IAlturaNFT"
           },
           "t_array(t_address)dyn_storage": {
@@ -149,14 +149,14 @@
           "t_mapping(t_address,t_address)": {
             "label": "mapping(address => address)"
           },
-          "t_mapping(t_uint256,t_struct(Item)5263_storage)": {
-            "label": "mapping(uint256 => struct AlturaNFTSwap.Item)"
+          "t_mapping(t_uint256,t_struct(Item)7708_storage)": {
+            "label": "mapping(uint256 => struct AlturaNFTFactory.Item)"
           },
           "t_uint256": {
             "label": "uint256"
           },
-          "t_struct(Item)5263_storage": {
-            "label": "struct AlturaNFTSwap.Item",
+          "t_struct(Item)7708_storage": {
+            "label": "struct AlturaNFTFactory.Item",
             "members": [
               {
                 "label": "item_id",
@@ -187,7 +187,7 @@
                 "type": "t_uint256"
               },
               {
-                "label": "creatorFee",
+                "label": "royalty",
                 "type": "t_uint256"
               },
               {
@@ -211,309 +211,13 @@
           }
         }
       }
-    },
-    "2653108ebd5809d5d788cbda5f909d2da2dc8075dc84753bf4fca3ef88596b26": {
-      "address": "0x04b0DAEf0175835d9746e3e24192FE2f83F804C9",
-      "txHash": "0xef17c85bf0b6f473a89b4e3d09b537a7f571f073a218b6ee6a4e5b4e706c2511",
-      "layout": {
-        "storage": [
-          {
-            "contract": "Initializable",
-            "label": "_initialized",
-            "type": "t_bool",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:23"
-          },
-          {
-            "contract": "Initializable",
-            "label": "_initializing",
-            "type": "t_bool",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:28"
-          },
-          {
-            "contract": "ERC1967UpgradeUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:229"
-          },
-          {
-            "contract": "UUPSUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:36"
-          },
-          {
-            "contract": "ContextUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:31"
-          },
-          {
-            "contract": "OwnableUpgradeable",
-            "label": "_owner",
-            "type": "t_address",
-            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:20"
-          },
-          {
-            "contract": "OwnableUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)49_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:74"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "creatingFee",
-            "type": "t_uint256",
-            "src": "contracts\\AlturaLootboxFactory.sol:17"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "feeAddress",
-            "type": "t_address",
-            "src": "contracts\\AlturaLootboxFactory.sol:18"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "boxes",
-            "type": "t_array(t_address)dyn_storage",
-            "src": "contracts\\AlturaLootboxFactory.sol:20"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "boxCreators",
-            "type": "t_mapping(t_address,t_address)",
-            "src": "contracts\\AlturaLootboxFactory.sol:22"
-          }
-        ],
-        "types": {
-          "t_uint256": {
-            "label": "uint256"
-          },
-          "t_address": {
-            "label": "address"
-          },
-          "t_array(t_address)dyn_storage": {
-            "label": "address[]"
-          },
-          "t_mapping(t_address,t_address)": {
-            "label": "mapping(address => address)"
-          },
-          "t_array(t_uint256)49_storage": {
-            "label": "uint256[49]"
-          },
-          "t_array(t_uint256)50_storage": {
-            "label": "uint256[50]"
-          },
-          "t_bool": {
-            "label": "bool"
-          }
-        }
-      }
-    },
-    "3335b62ca1e9268b8cd2eb7c71eafd4e3d3930ffcd47afa4c7cf1129f10456a9": {
-      "address": "0xED255B4e49ea90d7D9Eb5adb7084BD035f1D6119",
-      "txHash": "0x44dd948e18eb64062ac594c6252fb52f97e034630d244b83240ddb82eaae602e",
-      "layout": {
-        "storage": [
-          {
-            "contract": "Initializable",
-            "label": "_initialized",
-            "type": "t_bool",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:23"
-          },
-          {
-            "contract": "Initializable",
-            "label": "_initializing",
-            "type": "t_bool",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:28"
-          },
-          {
-            "contract": "ERC1967UpgradeUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:229"
-          },
-          {
-            "contract": "UUPSUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:36"
-          },
-          {
-            "contract": "ContextUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:31"
-          },
-          {
-            "contract": "OwnableUpgradeable",
-            "label": "_owner",
-            "type": "t_address",
-            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:20"
-          },
-          {
-            "contract": "OwnableUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)49_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:74"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "creatingFee",
-            "type": "t_uint256",
-            "src": "contracts\\AlturaLootboxFactory.sol:17"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "feeAddress",
-            "type": "t_address",
-            "src": "contracts\\AlturaLootboxFactory.sol:18"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "boxes",
-            "type": "t_array(t_address)dyn_storage",
-            "src": "contracts\\AlturaLootboxFactory.sol:20"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "boxCreators",
-            "type": "t_mapping(t_address,t_address)",
-            "src": "contracts\\AlturaLootboxFactory.sol:22"
-          }
-        ],
-        "types": {
-          "t_uint256": {
-            "label": "uint256"
-          },
-          "t_address": {
-            "label": "address"
-          },
-          "t_array(t_address)dyn_storage": {
-            "label": "address[]"
-          },
-          "t_mapping(t_address,t_address)": {
-            "label": "mapping(address => address)"
-          },
-          "t_array(t_uint256)49_storage": {
-            "label": "uint256[49]"
-          },
-          "t_array(t_uint256)50_storage": {
-            "label": "uint256[50]"
-          },
-          "t_bool": {
-            "label": "bool"
-          }
-        }
-      }
-    },
-    "60e22a9598e43f88f296f8e2a9a4810816291363b975ecc7de58b151dda76f52": {
-      "address": "0x7F0D5aAde0F182307515519433453dd713Be40e7",
-      "txHash": "0x05c4b4ddfe23679906acce2f4f77dc551506389527f1434a4b4e6cdc5396bc6a",
-      "layout": {
-        "storage": [
-          {
-            "contract": "Initializable",
-            "label": "_initialized",
-            "type": "t_bool",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:23"
-          },
-          {
-            "contract": "Initializable",
-            "label": "_initializing",
-            "type": "t_bool",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:28"
-          },
-          {
-            "contract": "ERC1967UpgradeUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\ERC1967\\ERC1967UpgradeUpgradeable.sol:229"
-          },
-          {
-            "contract": "UUPSUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\proxy\\utils\\UUPSUpgradeable.sol:36"
-          },
-          {
-            "contract": "ContextUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\utils\\ContextUpgradeable.sol:31"
-          },
-          {
-            "contract": "OwnableUpgradeable",
-            "label": "_owner",
-            "type": "t_address",
-            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:20"
-          },
-          {
-            "contract": "OwnableUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)49_storage",
-            "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:74"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "creatingFee",
-            "type": "t_uint256",
-            "src": "contracts\\AlturaLootboxFactory.sol:17"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "feeAddress",
-            "type": "t_address",
-            "src": "contracts\\AlturaLootboxFactory.sol:18"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "boxes",
-            "type": "t_array(t_address)dyn_storage",
-            "src": "contracts\\AlturaLootboxFactory.sol:20"
-          },
-          {
-            "contract": "AlturaLootboxFactory",
-            "label": "boxCreators",
-            "type": "t_mapping(t_address,t_address)",
-            "src": "contracts\\AlturaLootboxFactory.sol:22"
-          }
-        ],
-        "types": {
-          "t_uint256": {
-            "label": "uint256"
-          },
-          "t_address": {
-            "label": "address"
-          },
-          "t_array(t_address)dyn_storage": {
-            "label": "address[]"
-          },
-          "t_mapping(t_address,t_address)": {
-            "label": "mapping(address => address)"
-          },
-          "t_array(t_uint256)49_storage": {
-            "label": "uint256[49]"
-          },
-          "t_array(t_uint256)50_storage": {
-            "label": "uint256[50]"
-          },
-          "t_bool": {
-            "label": "bool"
-          }
-        }
-      }
     }
   },
   "proxies": [
     {
-      "address": "0x92a76d478F501e899F0325d36759e86fc9ce1600",
+      "address": "0xE8b9f2990787319a4D4097adAd55BdA41B0Ef99E",
       "kind": "uups",
-      "txHash": "0x8cec0413fa7620ff80dd1b687ca68b0ecbafe5229d001cd05b292255e2436755"
-    },
-    {
-      "address": "0xd539aF5200cdBc73771C560D163b9FA54D63a908",
-      "kind": "uups",
-      "txHash": "0x8a98570d7d59f9ef281e93b68da77cf61a35f40637530a30ce4e3706900ac259"
+      "txHash": "0x800dd6bec8d7b06b6e1bc6e193a112ec2daddcc7c8ed3ceeaa91a73389e433a0"
     }
   ]
 }

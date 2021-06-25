@@ -22,10 +22,10 @@ interface IAlturaNFT {
 	function mint(address to, uint256 id, uint256 amount) external returns(bool);
 	function balanceOf(address account, uint256 id) external view returns (uint256);
 	function creatorOf(uint256 id) external view returns (address);
-	function creatorFee(uint256 id) external view returns (uint256);
+	function royaltyOf(uint256 id) external view returns (uint256);
 }
 
-contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgradeable {
+contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgradeable {
     using SafeMath for uint256;
 	using EnumerableSet for EnumerableSet.AddressSet;
 
@@ -45,7 +45,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		address owner;
 		uint256 balance;
 		uint256 price;
-		uint256 creatorFee;
+		uint256 royalty;
 		uint256 totalSold;
 		bool bValid;
 	}
@@ -68,7 +68,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 
 	/** Events */
     event CollectionCreated(address collection_address, address owner, string name, string uri, bool isPublic);
-    event ItemListed(uint256 id, address collection, uint256 token_id, uint256 amount, uint256 price, address creator, address owner, uint256 creatorFee);
+    event ItemListed(uint256 id, address collection, uint256 token_id, uint256 amount, uint256 price, address creator, address owner, uint256 royalty);
 	event ItemDelisted(uint256 id);
 	event ItemPriceUpdated(uint256 id, uint256 price);
 	event ItemAdded(uint256 id, uint256 amount, uint256 balance);
@@ -84,7 +84,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
         feeAddress = _fee;
 		swapFee = 25; // 2.5%
 
-		address _default_nft = createCollection("AlturaNFT", "https://plutus-app-mvp.herokuapp.com/api/item/", true);
+		address _default_nft = createCollection("AlturaNFT", "https://plutus.com/api/item/", true);
 		alturaNFT = IAlturaNFT(_default_nft);
     }
 
@@ -138,13 +138,17 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 		items[currentItemId].item_id = currentItemId;
 		items[currentItemId].collection = _collection;
 		items[currentItemId].token_id = _token_id;
-		items[currentItemId].creator = nft.creatorOf(_token_id);
 		items[currentItemId].owner = msg.sender;
 		items[currentItemId].balance = _amount;
 		items[currentItemId].price = _price;
-		items[currentItemId].creatorFee = nft.creatorFee(_token_id);
-		items[currentItemId].totalSold = 0;
 		items[currentItemId].bValid = true;
+
+		try nft.creatorOf(_token_id) returns (address creator) {
+            items[currentItemId].creator = creator;
+			items[currentItemId].royalty = nft.royaltyOf(_token_id);
+        } catch (bytes memory /*lowLevelData*/) {
+           
+        }
 
         emit ItemListed(currentItemId, 
 			_collection,
@@ -153,7 +157,7 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 			_price, 
 			items[currentItemId].creator,
 			msg.sender,
-			items[currentItemId].creatorFee
+			items[currentItemId].royalty
 		);
     }
 
@@ -222,11 +226,11 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 			require(alturaToken.transferFrom(msg.sender, feeAddress, plutusAmount.mul(swapFee).div(PERCENTS_DIVIDER)), "failed to transfer admin fee");
 		}
 		// transfer Plutus token to creator
-		if(item.creatorFee > 0) {
-			require(alturaToken.transferFrom(msg.sender, item.creator, plutusAmount.mul(item.creatorFee).div(PERCENTS_DIVIDER)), "failed to transfer creator fee");
+		if(item.royalty > 0) {
+			require(alturaToken.transferFrom(msg.sender, item.creator, plutusAmount.mul(item.royalty).div(PERCENTS_DIVIDER)), "failed to transfer creator fee");
 		}
 		// transfer Plutus token to owner
-		uint256 ownerPercent = PERCENTS_DIVIDER.sub(swapFee).sub(item.creatorFee);
+		uint256 ownerPercent = PERCENTS_DIVIDER.sub(swapFee).sub(item.royalty);
 		require(alturaToken.transferFrom(msg.sender, item.owner, plutusAmount.mul(ownerPercent).div(PERCENTS_DIVIDER)), "failed to transfer to owner");
 
 		// transfer NFT token to buyer
@@ -241,4 +245,6 @@ contract AlturaNFTSwap is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgr
 
         emit Swapped(msg.sender, _id, _amount);
     }
+
+	receive() external payable {revert();}
 }
