@@ -6,11 +6,20 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "./AlturaNFT.sol";
+
+
+interface IWETH {
+    function deposit() external payable;
+    function withdraw(uint wad) external;
+
+    function transfer(address to, uint256 value) external returns (bool);
+}
 
 interface IAlturaNFT {
 	function initialize(string memory _name, string memory _uri, address creator, bool bPublic) external;
@@ -25,15 +34,17 @@ interface IAlturaNFT {
 	function royaltyOf(uint256 id) external view returns (uint256);
 }
 
-contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgradeable {
+contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableUpgradeable, ReentrancyGuardUpgradeable {
     using SafeMath for uint256;
 	using EnumerableSet for EnumerableSet.AddressSet;
 
 	uint256 constant public PERCENTS_DIVIDER = 1000;
 	uint256 constant public FEE_MAX_PERCENT = 300;
 	
+	//address public immutable wethAddress = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F;  // BSC Testnet
+	address public immutable wethAddress = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;    // BSC Mainnet
 
-    IERC20 public alturaToken;
+
     IAlturaNFT public alturaNFT;
 
     /* Pairs to swap NFT _id => price */
@@ -44,6 +55,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		address creator;
 		address owner;
 		uint256 balance;
+		address currency;
 		uint256 price;
 		uint256 royalty;
 		uint256 totalSold;
@@ -68,7 +80,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
 	/** Events */
     event CollectionCreated(address collection_address, address owner, string name, string uri, bool isPublic);
-    event ItemListed(uint256 id, address collection, uint256 token_id, uint256 amount, uint256 price, address creator, address owner, uint256 royalty);
+    event ItemListed(uint256 id, address collection, uint256 token_id, uint256 amount, uint256 price, address currency, address creator, address owner, uint256 royalty);
 	event ItemDelisted(uint256 id);
 	event ItemPriceUpdated(uint256 id, uint256 price);
 	event ItemAdded(uint256 id, uint256 amount, uint256 balance);
@@ -76,11 +88,11 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
     event Swapped(address buyer, uint256 id, uint256 amount);
 
-	function initialize(address _altura, address _fee) public initializer {
+	function initialize(address _fee) public initializer {
 		__Ownable_init();
 		__ERC1155Holder_init();
+		__ReentrancyGuard_init();
 
-        alturaToken = IERC20(_altura);
         feeAddress = _fee;
 		swapFee = 25; // 2.5%
 
@@ -89,11 +101,6 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
     }
 
 	function _authorizeUpgrade(address newImplementation) internal override {}
-
-    function setalturaToken(address _address) external onlyOwner {
-        require(_address != address(0x0), "invalid address");
-		alturaToken = IERC20(_address);
-    }
 
     function setNFTAddress(address _address) external onlyOwner {
 		require(_address != address(0x0), "invalid address");
@@ -123,7 +130,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		emit CollectionCreated(collection, msg.sender, _name, _uri, bPublic);
 	}
 
-    function list(address _collection, uint256 _token_id, uint256 _amount, uint256 _price, bool _bMint) public {
+    function list(address _collection, uint256 _token_id, uint256 _amount, uint256 _price, address _currency, bool _bMint) public {
 		require(_price > 0, "invalid price");
 		require(_amount > 0, "invalid amount");
 
@@ -141,6 +148,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		items[currentItemId].owner = msg.sender;
 		items[currentItemId].balance = _amount;
 		items[currentItemId].price = _price;
+		items[currentItemId].currency = _currency;
 		items[currentItemId].bValid = true;
 
 		try nft.creatorOf(_token_id) returns (address creator) {
@@ -155,6 +163,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 			_token_id, 
 			_amount, 
 			_price, 
+			_currency,
 			items[currentItemId].creator,
 			msg.sender,
 			items[currentItemId].royalty
@@ -202,36 +211,37 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		emit ItemPriceUpdated(_id, _price);
 	}
 
-	function buy(uint256 _id, uint256 _amount) external {
-		_buy(_id, _amount);
-	}
-	
-	function batchBuy(uint256[] memory _ids, uint256[] memory _amounts) external {
-		require(_ids.length == _amounts.length, "ids and amounts length mismatch");
-
-		for (uint256 i = 0; i < _ids.length; ++i) {
-			_buy(_ids[i], _amounts[i]);
-        }
-	}
-
-    function _buy(uint256 _id, uint256 _amount) internal {
+    function buy(uint256 _id, uint256 _amount) external payable nonReentrant {
         require(items[_id].bValid, "invalid Item id");
 		require(items[_id].balance >= _amount, "insufficient NFT balance");
+		require(items[_id].currency != address(0x0) || items[_id].price.mul(_amount) == msg.value, "Invalid amount");
 
 		Item memory item = items[_id];
 		uint256 plutusAmount = item.price.mul(_amount);
+		uint256 ownerPercent = PERCENTS_DIVIDER.sub(swapFee).sub(item.royalty);
 
 		// transfer Plutus token to admin
-		if(swapFee > 0) {
-			require(alturaToken.transferFrom(msg.sender, feeAddress, plutusAmount.mul(swapFee).div(PERCENTS_DIVIDER)), "failed to transfer admin fee");
+		if(item.currency == address(0x0)) {
+			if(swapFee > 0) {
+				require(_safeTransferBNB(feeAddress, plutusAmount.mul(swapFee).div(PERCENTS_DIVIDER)), "failed to transfer admin fee");
+			}
+			// transfer Plutus token to creator
+			if(item.royalty > 0) {
+				require(_safeTransferBNB(item.creator, plutusAmount.mul(item.royalty).div(PERCENTS_DIVIDER)), "failed to transfer creator fee");
+			}
+			// transfer Plutus token to owner
+			require(_safeTransferBNB(item.owner, plutusAmount.mul(ownerPercent).div(PERCENTS_DIVIDER)), "failed to transfer to owner");
+		}else {
+			if(swapFee > 0) {
+				require(IERC20(item.currency).transferFrom(msg.sender, feeAddress, plutusAmount.mul(swapFee).div(PERCENTS_DIVIDER)), "failed to transfer admin fee");
+			}
+			// transfer Plutus token to creator
+			if(item.royalty > 0) {
+				require(IERC20(item.currency).transferFrom(msg.sender, item.creator, plutusAmount.mul(item.royalty).div(PERCENTS_DIVIDER)), "failed to transfer creator fee");
+			}
+			// transfer Plutus token to owner
+			require(IERC20(item.currency).transferFrom(msg.sender, item.owner, plutusAmount.mul(ownerPercent).div(PERCENTS_DIVIDER)), "failed to transfer to owner");
 		}
-		// transfer Plutus token to creator
-		if(item.royalty > 0) {
-			require(alturaToken.transferFrom(msg.sender, item.creator, plutusAmount.mul(item.royalty).div(PERCENTS_DIVIDER)), "failed to transfer creator fee");
-		}
-		// transfer Plutus token to owner
-		uint256 ownerPercent = PERCENTS_DIVIDER.sub(swapFee).sub(item.royalty);
-		require(alturaToken.transferFrom(msg.sender, item.owner, plutusAmount.mul(ownerPercent).div(PERCENTS_DIVIDER)), "failed to transfer to owner");
 
 		// transfer NFT token to buyer
 		IAlturaNFT(items[_id].collection).safeTransferFrom(address(this), msg.sender, item.token_id, _amount, "buy from Altura Marketplace");
@@ -246,5 +256,15 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
         emit Swapped(msg.sender, _id, _amount);
     }
 
-	receive() external payable {revert();}
+	function _safeTransferBNB(address to, uint256 value) internal returns(bool) {
+		(bool success, ) = to.call{value: value}(new bytes(0));
+		if(!success) {
+			IWETH(wethAddress).deposit{value: value}();
+			return IERC20(wethAddress).transfer(to, value);
+		}
+		return success;
+        
+    }
+	
+	receive() external payable {}
 }
