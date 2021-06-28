@@ -41,8 +41,8 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 	uint256 constant public PERCENTS_DIVIDER = 1000;
 	uint256 constant public FEE_MAX_PERCENT = 300;
 	
-	//address public immutable wethAddress = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F;  // BSC Testnet
-	address public immutable wethAddress = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;    // BSC Mainnet
+	address constant public wethAddress = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F;  // BSC Testnet
+	//address constant public wethAddress = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;    // BSC Mainnet
 
 
     IAlturaNFT public alturaNFT;
@@ -82,7 +82,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
     event CollectionCreated(address collection_address, address owner, string name, string uri, bool isPublic);
     event ItemListed(uint256 id, address collection, uint256 token_id, uint256 amount, uint256 price, address currency, address creator, address owner, uint256 royalty);
 	event ItemDelisted(uint256 id);
-	event ItemPriceUpdated(uint256 id, uint256 price);
+	event ItemPriceUpdated(uint256 id, uint256 price, address currency);
 	event ItemAdded(uint256 id, uint256 amount, uint256 balance);
 	event ItemRemoved(uint256 id, uint256 amount, uint256 balance);
 
@@ -201,14 +201,15 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		emit ItemRemoved(_id, _amount, items[_id].balance);
 	}
     
-	function updatePrice(uint256 _id, uint256 _price) external {
+	function updatePrice(uint256 _id, address _currency, uint256 _price) external {
 		require(_price > 0, "invalid new price");
 		require(items[_id].bValid, "invalid Item id");
 		require(items[_id].owner == msg.sender || msg.sender == owner(), "only owner can update price");
 
 		items[_id].price = _price;
+		items[_id].currency = _currency;
 
-		emit ItemPriceUpdated(_id, _price);
+		emit ItemPriceUpdated(_id, _price, _currency);
 	}
 
     function buy(uint256 _id, uint256 _amount) external payable nonReentrant {

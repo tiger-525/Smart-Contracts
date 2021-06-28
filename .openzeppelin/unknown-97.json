@@ -1,9 +1,9 @@
 {
   "manifestVersion": "3.2",
   "impls": {
-    "b7d1bc14d83d0912b2d6e1c2378a66a46a061902e3eb697206d72215c9975633": {
-      "address": "0x2d13F41c0C86746d77B8a5e07f3DCB177F766F84",
-      "txHash": "0xabefef83b7a3631b4b5d24286451d7180df0ecfb1f13c03503e9f5ad34cba000",
+    "c38e7efc93ba6137f2a10278d83d5aca1a7aac5819a7463b231d8a0ac383bc42": {
+      "address": "0x8d4035dd7498dB120aFfceB8f0B13F38C24C972d",
+      "txHash": "0x82a56f16dd6f651ca791184a479fbf750c2d67c2a0f23c3e0965061ec70e7223",
       "layout": {
         "storage": [
           {
@@ -67,77 +67,80 @@
             "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:74"
           },
           {
-            "contract": "AlturaNFTFactory",
-            "label": "alturaToken",
-            "type": "t_contract(IERC20)3396",
-            "src": "contracts\\AlturaNFTFactory.sol:36"
+            "contract": "ReentrancyGuardUpgradeable",
+            "label": "_status",
+            "type": "t_uint256",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:37"
+          },
+          {
+            "contract": "ReentrancyGuardUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin\\contracts-upgradeable\\security\\ReentrancyGuardUpgradeable.sol:67"
           },
           {
             "contract": "AlturaNFTFactory",
             "label": "alturaNFT",
-            "type": "t_contract(IAlturaNFT)7662",
-            "src": "contracts\\AlturaNFTFactory.sol:37"
+            "type": "t_contract(IAlturaNFT)7739",
+            "src": "contracts\\AlturaNFTFactory.sol:48"
           },
           {
             "contract": "AlturaNFTFactory",
             "label": "collections",
             "type": "t_array(t_address)dyn_storage",
-            "src": "contracts\\AlturaNFTFactory.sol:53"
+            "src": "contracts\\AlturaNFTFactory.sol:65"
           },
           {
             "contract": "AlturaNFTFactory",
             "label": "collectionCreators",
             "type": "t_mapping(t_address,t_address)",
-            "src": "contracts\\AlturaNFTFactory.sol:55"
+            "src": "contracts\\AlturaNFTFactory.sol:67"
           },
           {
             "contract": "AlturaNFTFactory",
             "label": "items",
-            "type": "t_mapping(t_uint256,t_struct(Item)7708_storage)",
-            "src": "contracts\\AlturaNFTFactory.sol:57"
+            "type": "t_mapping(t_uint256,t_struct(Item)7789_storage)",
+            "src": "contracts\\AlturaNFTFactory.sol:69"
           },
           {
             "contract": "AlturaNFTFactory",
             "label": "currentItemId",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTFactory.sol:58"
+            "src": "contracts\\AlturaNFTFactory.sol:70"
           },
           {
             "contract": "AlturaNFTFactory",
             "label": "totalSold",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTFactory.sol:60"
+            "src": "contracts\\AlturaNFTFactory.sol:72"
           },
           {
             "contract": "AlturaNFTFactory",
             "label": "totalEarning",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTFactory.sol:61"
+            "src": "contracts\\AlturaNFTFactory.sol:73"
           },
           {
             "contract": "AlturaNFTFactory",
             "label": "totalSwapped",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTFactory.sol:62"
+            "src": "contracts\\AlturaNFTFactory.sol:74"
           },
           {
             "contract": "AlturaNFTFactory",
             "label": "swapFee",
             "type": "t_uint256",
-            "src": "contracts\\AlturaNFTFactory.sol:65"
+            "src": "contracts\\AlturaNFTFactory.sol:77"
           },
           {
             "contract": "AlturaNFTFactory",
             "label": "feeAddress",
             "type": "t_address",
-            "src": "contracts\\AlturaNFTFactory.sol:66"
+            "src": "contracts\\AlturaNFTFactory.sol:78"
           }
         ],
         "types": {
-          "t_contract(IERC20)3396": {
-            "label": "contract IERC20"
-          },
-          "t_contract(IAlturaNFT)7662": {
+          "t_contract(IAlturaNFT)7739": {
             "label": "contract IAlturaNFT"
           },
           "t_array(t_address)dyn_storage": {
@@ -149,13 +152,13 @@
           "t_mapping(t_address,t_address)": {
             "label": "mapping(address => address)"
           },
-          "t_mapping(t_uint256,t_struct(Item)7708_storage)": {
+          "t_mapping(t_uint256,t_struct(Item)7789_storage)": {
             "label": "mapping(uint256 => struct AlturaNFTFactory.Item)"
           },
           "t_uint256": {
             "label": "uint256"
           },
-          "t_struct(Item)7708_storage": {
+          "t_struct(Item)7789_storage": {
             "label": "struct AlturaNFTFactory.Item",
             "members": [
               {
@@ -181,6 +184,10 @@
               {
                 "label": "balance",
                 "type": "t_uint256"
+              },
+              {
+                "label": "currency",
+                "type": "t_address"
               },
               {
                 "label": "price",
@@ -215,9 +222,9 @@
   },
   "proxies": [
     {
-      "address": "0xE8b9f2990787319a4D4097adAd55BdA41B0Ef99E",
+      "address": "0xc6040E27A457534E0025220b6cC6329d9d94425F",
       "kind": "uups",
-      "txHash": "0x800dd6bec8d7b06b6e1bc6e193a112ec2daddcc7c8ed3ceeaa91a73389e433a0"
+      "txHash": "0xf7361d8592b303c570b89d0223c83163a4e9ce3b1a3eee0f72a42334a5d260c0"
     }
   ]
 }
