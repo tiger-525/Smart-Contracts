@@ -40,12 +40,10 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
 	uint256 constant public PERCENTS_DIVIDER = 1000;
 	uint256 constant public FEE_MAX_PERCENT = 300;
+	uint256 constant public DEFAULT_FEE_PERCENT = 40;
 	
 	address constant public wethAddress = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F;  // BSC Testnet
 	//address constant public wethAddress = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;    // BSC Mainnet
-
-
-    IAlturaNFT public alturaNFT;
 
     /* Pairs to swap NFT _id => price */
 	struct Item {
@@ -73,8 +71,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 	uint256 public totalEarning; /* Total Plutus Token */
 	uint256 public totalSwapped; /* Total swap count */
 
-
-	uint256 public swapFee;  // swap fee as percent - percent divider = 1000
+	mapping(address => uint256) public swapFees; // swap fees (currency => fee) : percent divider = 1000
 	address public feeAddress; 
 
 
@@ -94,27 +91,22 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		__ReentrancyGuard_init();
 
         feeAddress = _fee;
-		swapFee = 25; // 2.5%
+		swapFees[address(0x0)] = 40;
+		swapFees[0xFdb09FBeb34A5b00473382d47fD718da889B7Feb] = 25;   //Alutra Token
 
-		address _default_nft = createCollection("AlturaNFT", "https://api.alturanft.com/meta/alturanft/", true);
-		alturaNFT = IAlturaNFT(_default_nft);
+		createCollection("AlturaNFT", "https://api.alturanft.com/meta/alturanft/", true);
     }
 
 	function _authorizeUpgrade(address newImplementation) internal override {}
-
-    function setNFTAddress(address _address) external onlyOwner {
-		require(_address != address(0x0), "invalid address");
-        alturaNFT = IAlturaNFT(_address);
-    }
 
 	function setFeeAddress(address _address) external onlyOwner {
 		require(_address != address(0x0), "invalid address");
         feeAddress = _address;
     }
 
-	function setSwapFeePercent(uint256 _percent) external onlyOwner {
+	function setSwapFeePercent(address currency,uint256 _percent) external onlyOwner {
 		require(_percent < FEE_MAX_PERCENT, "too big swap fee");
-		swapFee = _percent;
+		swapFees[currency] = _percent;
 	}
 
 	function createCollection(string memory _name, string memory _uri, bool bPublic) public returns(address collection) {
@@ -218,6 +210,10 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		require(items[_id].currency != address(0x0) || items[_id].price.mul(_amount) == msg.value, "Invalid amount");
 
 		Item memory item = items[_id];
+		uint256 swapFee = swapFees[item.currency];
+		if(swapFee == 0x0) {
+			swapFee = DEFAULT_FEE_PERCENT;
+		}
 		uint256 plutusAmount = item.price.mul(_amount);
 		uint256 ownerPercent = PERCENTS_DIVIDER.sub(swapFee).sub(item.royalty);
 
