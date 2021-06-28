@@ -96,7 +96,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
         feeAddress = _fee;
 		swapFee = 25; // 2.5%
 
-		address _default_nft = createCollection("AlturaNFT", "https://plutus.com/api/item/", true);
+		address _default_nft = createCollection("AlturaNFT", "https://api.alturanft.com/meta/alturanft/", true);
 		alturaNFT = IAlturaNFT(_default_nft);
     }
 
