@@ -83,7 +83,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 	event ItemAdded(uint256 id, uint256 amount, uint256 balance);
 	event ItemRemoved(uint256 id, uint256 amount, uint256 balance);
 
-    event Swapped(address buyer, uint256 id, address collection, uint256 token_id, uint256 amount);
+    event Swapped(address buyer, address seller, uint256 id, address collection, uint256 token_id, uint256 amount);
 
 	function initialize(address _fee) public initializer {
 		__Ownable_init();
@@ -250,7 +250,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		totalEarning = totalEarning.add(plutusAmount);
 		totalSwapped = totalSwapped.add(1);
 
-        emit Swapped(msg.sender, _id, items[_id].collection, items[_id].token_id, _amount);
+        emit Swapped(msg.sender, item.owner, _id, items[_id].collection, items[_id].token_id, _amount);
     }
 
 	function _safeTransferBNB(address to, uint256 value) internal returns(bool) {
