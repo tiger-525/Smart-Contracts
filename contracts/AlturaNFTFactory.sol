@@ -78,12 +78,12 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 	/** Events */
     event CollectionCreated(address collection_address, address owner, string name, string uri, bool isPublic);
     event ItemListed(uint256 id, address collection, uint256 token_id, uint256 amount, uint256 price, address currency, address creator, address owner, uint256 royalty);
-	event ItemDelisted(uint256 id);
-	event ItemPriceUpdated(uint256 id, uint256 price, address currency);
+	event ItemDelisted(uint256 id, address collection, uint256 token_id);
+	event ItemPriceUpdated(uint256 id, address collection, uint256 token_id, uint256 price, address currency);
 	event ItemAdded(uint256 id, uint256 amount, uint256 balance);
 	event ItemRemoved(uint256 id, uint256 amount, uint256 balance);
 
-    event Swapped(address buyer, uint256 id, uint256 amount);
+    event Swapped(address buyer, uint256 id, address collection, uint256 token_id, uint256 amount);
 
 	function initialize(address _fee) public initializer {
 		__Ownable_init();
@@ -170,7 +170,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		items[_id].balance = 0;
 		items[_id].bValid = false;
 
-		emit ItemDelisted(_id);
+		emit ItemDelisted(_id, items[_id].collection, items[_id].token_id);
 	}
 
 	function addItems(uint256 _id, uint256 _amount) external {
@@ -201,7 +201,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		items[_id].price = _price;
 		items[_id].currency = _currency;
 
-		emit ItemPriceUpdated(_id, _price, _currency);
+		emit ItemPriceUpdated(_id, items[_id].collection, items[_id].token_id, _price, _currency);
 	}
 
     function buy(uint256 _id, uint256 _amount) external payable nonReentrant {
@@ -250,7 +250,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		totalEarning = totalEarning.add(plutusAmount);
 		totalSwapped = totalSwapped.add(1);
 
-        emit Swapped(msg.sender, _id, _amount);
+        emit Swapped(msg.sender, _id, items[_id].collection, items[_id].token_id, _amount);
     }
 
 	function _safeTransferBNB(address to, uint256 value) internal returns(bool) {
