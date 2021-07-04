@@ -50,27 +50,6 @@ contract AlturaNFT is ERC1155, AccessControl {
     }
 
 	/**
-		Change Collection URI
-	 */
-	function setURI(string memory newuri) public onlyOwner {
-		_setURI(newuri);
-    }
-
-	/**
-		Change Collection Name
-	 */
-	function setName(string memory newname) public onlyOwner {
-		name = newname;
-    }
-
-	/**
-		Make collection as Public
-	 */
-	function setPublic(bool bPublic) public onlyOwner {
-		isPublic = bPublic;
-	}
-
-	/**
 		Create Card - Only Minters
 	 */
 	function addItem(uint256 maxSupply, uint256 supply, uint256 _fee) public returns (uint256) {
