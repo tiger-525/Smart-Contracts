@@ -11,15 +11,16 @@ async function main () {
   const signer = (await ethers.getSigners())[0]
   console.log('signer:', await signer.getAddress())
 
-  let plutusTokenAddress = "0x1C20d2b2F46916DDA8c4fAea6aeE15b4437f39eC";
+  let plutusTokenAddress = "0x8263CD1601FE73C066bf49cc09841f35348e3be0";
   let nftTokenAddress = "0xa0E386b51c4d7788190aEd09397929560a1845C5";
   let plutusSwapAddress = "0xc6040E27A457534E0025220b6cC6329d9d94425F";
   let plutusLootboxAddress = "0xd539aF5200cdBc73771C560D163b9FA54D63a908";
+
   let deployFlag = {
     deployAluturaFaucet: false,
     deployAlturaToken: false,
-    deployAlturaSwap: false,
-    upgradeAlturaSwap: true,
+    deployAlturaSwap: true,
+    upgradeAlturaSwap: false,
     deployAlturaLootbox: false,
     upgradeAlturaLootbox: false,
   };
@@ -81,7 +82,7 @@ async function main () {
     })
   
     const swapContract = await upgrades.deployProxy(PlutusSwap, 
-      ['0xc2A79DdAF7e95C141C20aa1B10F3411540562FF7'],
+      ['0xAeAF8FcC925d254fC62051a12fF13da1aFfa5Ed4'],
       {initializer: 'initialize',kind: 'uups'});
     await swapContract.deployed()
   

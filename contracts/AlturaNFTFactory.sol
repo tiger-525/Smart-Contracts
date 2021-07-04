@@ -42,8 +42,8 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 	uint256 constant public FEE_MAX_PERCENT = 300;
 	uint256 constant public DEFAULT_FEE_PERCENT = 40;
 	
-	address constant public wethAddress = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F;  // BSC Testnet
-	//address constant public wethAddress = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;    // BSC Mainnet
+	//address constant public wethAddress = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F;  // BSC Testnet
+	address constant public wethAddress = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;    // BSC Mainnet
 
     /* Pairs to swap NFT _id => price */
 	struct Item {
@@ -92,7 +92,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
         feeAddress = _fee;
 		swapFees[address(0x0)] = 40;
-		swapFees[0xFdb09FBeb34A5b00473382d47fD718da889B7Feb] = 25;   //Alutra Token
+		swapFees[0x8263CD1601FE73C066bf49cc09841f35348e3be0] = 25;   //Alutra Token
 
 		createCollection("AlturaNFT", "https://api.alturanft.com/meta/alturanft/", true);
     }
