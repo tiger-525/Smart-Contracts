@@ -134,6 +134,7 @@ contract AlturaNFT is ERC1155, AccessControl {
 	function burn(address from, uint256 id, uint256 amount) public returns(bool){
 		require(hasRole(MINTER_ROLE, msg.sender) || creatorOf(id) == msg.sender, "Only minter or creator can burn");
 
+		totalSupply[id] = totalSupply[id].sub(amount);
 		circulatingSupply[id] = circulatingSupply[id].sub(amount);
 		_burn(from, id, amount);
 		return true;
