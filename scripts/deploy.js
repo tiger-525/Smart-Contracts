@@ -19,8 +19,8 @@ async function main () {
   let deployFlag = {
     deployAluturaFaucet: false,
     deployAlturaToken: false,
-    deployAlturaSwap: true,
-    upgradeAlturaSwap: false,
+    deployAlturaSwap: false,
+    upgradeAlturaSwap: true,
     deployAlturaLootbox: false,
     upgradeAlturaLootbox: false,
   };
