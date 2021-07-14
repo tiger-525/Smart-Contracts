@@ -45,9 +45,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 	//address constant public wethAddress = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F;  // BSC Testnet
 	address constant public wethAddress = 0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c;    // BSC Mainnet
 
-	EnumerableSet.AddressSet private _supportedTokens; //payment token (ERC20)
-
-    /* Pairs to swap NFT _id => price */
+	/* Pairs to swap NFT _id => price */
 	struct Item {
 		uint256 item_id;
 		address collection;
@@ -75,6 +73,8 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
 	mapping(address => uint256) public swapFees; // swap fees (currency => fee) : percent divider = 1000
 	address public feeAddress; 
+
+	EnumerableSet.AddressSet private _supportedTokens; //payment token (ERC20)
 
 
 	/** Events */
