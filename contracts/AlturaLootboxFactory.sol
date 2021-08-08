@@ -23,22 +23,23 @@ contract AlturaLootboxFactory is UUPSUpgradeable, OwnableUpgradeable {
 	
 
 	/** Events */
-    event LootboxCreated(address box_address, address owner, string name, address currency, uint256 price);
+    event LootboxCreated(address box_address, address owner, string name, address paymentToken, uint256 paymentTokenId, uint256 price);
     event FeeUpdated(uint256 old_fee, uint256 new_fee);
 
 	function initialize(address _feeAddress) public initializer {
 		__Ownable_init();
 
-		creatingFee = 0.1 ether;
+		creatingFee = 0.001 ether;
 		feeAddress = _feeAddress;
     }
 
-	function _authorizeUpgrade(address newImplementation) internal override {}
+	function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 
 	/** Create Lootbox */
 	function createLootbox(string memory _name, 
 		string memory _uri,
-		address _currency, 
+		address _paymentCollection,
+		uint256 _paymentTokenId, 
 		uint256 _price) external  payable {
 		
 		require(msg.value >= creatingFee, "insufficient fee");
@@ -48,16 +49,16 @@ contract AlturaLootboxFactory is UUPSUpgradeable, OwnableUpgradeable {
 		if(remain > 0) payable(msg.sender).transfer(remain);
 
 		bytes memory bytecode = type(AlturaLootbox).creationCode;
-        bytes32 salt = keccak256(abi.encodePacked(_name, _currency, block.timestamp));
+        bytes32 salt = keccak256(abi.encodePacked(_name, _paymentCollection, block.timestamp));
         address lootbox;
 		assembly {
             lootbox := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
-        AlturaLootbox(lootbox).initialize(_name, _uri, _currency, _price, msg.sender);
+        AlturaLootbox(lootbox).initialize(_name, _uri, _paymentCollection, _paymentTokenId, _price, msg.sender);
 		boxes.push(lootbox);
 		boxCreators[lootbox] = msg.sender;
 
-		emit LootboxCreated(lootbox, msg.sender, _name, _currency, _price);
+		emit LootboxCreated(lootbox, msg.sender, _name, _paymentCollection, _paymentTokenId, _price);
 	}
 
 

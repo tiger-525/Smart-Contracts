@@ -14,15 +14,15 @@ async function main () {
   let plutusTokenAddress = "0x8263CD1601FE73C066bf49cc09841f35348e3be0";
   let nftTokenAddress = "0xa0E386b51c4d7788190aEd09397929560a1845C5";
   let plutusSwapAddress = "0xe29F0B490F0d89CA7ACAc1C7BeD2E07eCAD65201";
-  let plutusLootboxAddress = "0xd539aF5200cdBc73771C560D163b9FA54D63a908";
+  let plutusLootboxAddress = "0x6AAd1ad63D94e4d1455A4D6e1aE9ee50C85374cb";
 
   let deployFlag = {
     deployAluturaFaucet: false,
     deployAlturaToken: false,
     deployAlturaSwap: false,
-    upgradeAlturaSwap: true,
+    upgradeAlturaSwap: false,
     deployAlturaLootbox: false,
-    upgradeAlturaLootbox: false,
+    upgradeAlturaLootbox: true,
   };
 
 

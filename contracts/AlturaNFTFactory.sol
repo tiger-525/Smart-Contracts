@@ -28,7 +28,7 @@ interface IAlturaNFT {
 			uint256 id,
 			uint256 amount,
 			bytes calldata data) external;
-	function mint(address to, uint256 id, uint256 amount) external returns(bool);
+	function mint(address to, uint256 id, uint256 amount, bytes memory data) external returns(bool);
 	function balanceOf(address account, uint256 id) external view returns (uint256);
 	function creatorOf(uint256 id) external view returns (address);
 	function royaltyOf(uint256 id) external view returns (uint256);
@@ -154,7 +154,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
 		IAlturaNFT nft = IAlturaNFT(_collection);
 		if(_bMint) {
-			require(nft.mint(address(this), _token_id, _amount), "mint failed");
+			require(nft.mint(address(this), _token_id, _amount, "Mint by AluturaNFT"), "mint failed");
 		} else {
 			nft.safeTransferFrom(msg.sender, address(this), _token_id, _amount, "List");
 		}

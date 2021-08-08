@@ -113,12 +113,12 @@ contract AlturaNFT is ERC1155, AccessControl {
 	/**
 		Mint - Only Minters or cretors
 	 */
-	function mint(address to, uint256 id, uint256 amount) public returns (bool){
+	function mint(address to, uint256 id, uint256 amount, bytes memory data) public returns (bool){
 		require(hasRole(MINTER_ROLE, msg.sender) || creatorOf(id) == msg.sender, "Only minter or creator can mint");
 		require(circulatingSupply[id].add(amount) <= totalSupply[id], "Total supply reached.");
 
 		circulatingSupply[id] = circulatingSupply[id].add(amount);
-		_mint(to, id, amount, "");
+		_mint(to, id, amount, data);
 		return true;
 	}	
 

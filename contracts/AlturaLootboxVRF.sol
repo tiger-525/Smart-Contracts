@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 
+import "@chainlink/contracts/src/v0.8/dev/VRFConsumerBase.sol";
+
 interface IAlturaNFT {
 	function safeTransferFrom(address from,
 			address to,
@@ -24,7 +26,7 @@ interface IAlturaNFT {
 	function balanceOf(address account, uint256 id) external view returns (uint256);
 }
 
-contract AlturaLootbox is ERC1155Holder  {
+contract AlturaLootbox is ERC1155Holder, VRFConsumerBase  {
     using SafeMath for uint256;
     using EnumerableSet for EnumerableSet.AddressSet;
     using EnumerableSet for EnumerableSet.Bytes32Set;
@@ -56,7 +58,8 @@ contract AlturaLootbox is ERC1155Holder  {
 
     enum RoundStatus { Initial, Pending, Finished } // status of this round
     mapping(address => Round) public gameRounds;
-    
+    mapping(bytes32 => address) private _vrfRequests;
+
     uint256 public currentRoundIdCount; //until now, the total round of this Lootbox.
     uint256 public totalRoundCount;
 
@@ -101,9 +104,23 @@ contract AlturaLootbox is ERC1155Holder  {
     event LootboxLocked(bool locked);
 
     /**
+     * Constructor inherits VRFConsumerBase
+     * 
+     * Network: Binance Mainnet
+     * Chainlink VRF Coordinator address: 0x747973a5A2a4Ae1D3a8fDF5479f1514F65Db9C31
+     * LINK token address:                0x404460C6A5EdE2D891e8297795264fDe62ADBB75
+     * Key Hash: 0xc251acd21ec4fb7f31bb8868288bfdbaeb4fbfec2df3735ddbd4f7dc8d60103c
+     * Fee: 0.2 LINK
      */
-    constructor() {
+    constructor() 
+        VRFConsumerBase(
+            0x747973a5A2a4Ae1D3a8fDF5479f1514F65Db9C31, // VRF Coordinator
+            0x404460C6A5EdE2D891e8297795264fDe62ADBB75  // LINK Token
+        ) {
         factory = msg.sender;
+
+        vrfKeyHash = 0xc251acd21ec4fb7f31bb8868288bfdbaeb4fbfec2df3735ddbd4f7dc8d60103c;
+        vrfFee = 0.2 * 10 ** 18; // 0.2 LINK
     }
 
     function initialize(string memory _name, 
@@ -198,15 +215,29 @@ contract AlturaLootbox is ERC1155Holder  {
         // get random seed with userProvidedSeed and address of sender.
         uint256 seed = uint256(keccak256(abi.encode(userProvidedSeed, msg.sender)));
         
-        if (cardAmount > shuffleCount) {
-            _shufflePrizePool(seed);
+        // request random number to ChainLInk
+        bytes32 requestId = _getRandomNumber(seed);
+        _vrfRequests[requestId] = msg.sender;
+    }
+
+    /**
+     * Callback function used by VRF Coordinator
+     */
+    function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
+        address player = _vrfRequests[requestId];
+        Round storage round = gameRounds[player];
+        if(round.status != RoundStatus.Pending) {
+            return;
         }
 
-        address player = msg.sender;
+        if (cardAmount > shuffleCount) {
+            _shufflePrizePool(randomness.mod(cardAmount));
+        }
 
+        uint256 times = round.times;
         for (uint256 i = 0; i < times; i++) {
             // get randomResult with randomness and i.
-            uint256 randomResult =  _getRandomNumebr(seed, _salt, cardAmount);
+            uint256 randomResult = uint256(keccak256(abi.encode(randomness, i))).mod(cardAmount);
             // update random salt.
             _salt = ((randomResult + cardAmount + _salt) * (i + 1) * block.timestamp).mod(cardAmount) + 1;
             // transfer the cards.
@@ -221,7 +252,6 @@ contract AlturaLootbox is ERC1155Holder  {
 
         emit SpinLootbox(player, times, playFee);
     }
-
 
     /**
      * @param amount how much token will be needed and will be burned.
@@ -253,6 +283,14 @@ contract AlturaLootbox is ERC1155Holder  {
         _prizePool[randomResult] = _prizePool[cardAmount - 1];
         cardAmount = cardAmount.sub(1);
         gameRounds[player].cards[rand] = cardKey;
+    }
+
+    /** 
+     * Requests randomness from a user-provided seed
+     */
+    function _getRandomNumber(uint256 seed) private returns (bytes32 requestId) {
+        require(LINK.balanceOf(address(this)) >= vrfFee, "Not enough LINK ");
+        return requestRandomness(vrfKeyHash, vrfFee, seed);
     }
 
     function _getRandomNumebr(uint256 seed, uint256 salt, uint256 mod) view private returns(uint256) {
@@ -298,18 +336,6 @@ contract AlturaLootbox is ERC1155Holder  {
         return _cardIndices.at(index);
     }
     
-    function allCards() view public returns(address[] memory collectionIds, uint256[] memory tokenIds) {
-        uint256 cardsCount = cardKeyCount();
-        collectionIds = new address[](cardsCount);
-        tokenIds = new uint256[](cardsCount);
-
-        for(uint i = 0; i < cardsCount; i++) {
-            Card memory card = _cards[cardKeyWithIndex(i)];
-            collectionIds[i] = card.collectionId;
-            tokenIds[i] = card.tokenId;
-        }
-    }
-
 
     // ***************************
     // For Admin Account ***********
@@ -419,6 +445,15 @@ contract AlturaLootbox is ERC1155Holder  {
         }
     }
 
+    function withdrawLINK(uint256 amount) public onlyOwner {
+        require(LINK.balanceOf(address(this)) > 0, 'Insufficient LINK Token balance');
+        LINK.transfer(owner, amount);
+    }
+
+    function depositLINK(uint256 amount) public {
+        require(LINK.balanceOf(msg.sender) > amount, 'Insufficient LINK Token balance');
+        LINK.transferFrom(msg.sender, address(this), amount);
+    }
 
     function isContract(address _addr) view private returns (bool){
         uint32 size;
