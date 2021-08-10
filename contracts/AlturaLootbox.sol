@@ -256,7 +256,7 @@ contract AlturaLootbox is ERC1155Holder  {
     }
 
     function _getRandomNumebr(uint256 seed, uint256 salt, uint256 mod) view private returns(uint256) {
-        return uint256(keccak256(abi.encode(block.timestamp, block.difficulty, block.coinbase, block.gaslimit, seed, block.number))).mod(mod).add(seed).add(salt);
+        return uint256(keccak256(abi.encode(block.timestamp, block.difficulty, block.coinbase, blockhash(block.number + 1), seed, salt, block.number))).mod(mod);
     }
 
     function _createARound(uint256 times) private {

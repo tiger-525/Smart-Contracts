@@ -20,9 +20,9 @@ async function main () {
     deployAluturaFaucet: false,
     deployAlturaToken: false,
     deployAlturaSwap: false,
-    upgradeAlturaSwap: true,
+    upgradeAlturaSwap: false,
     deployAlturaLootbox: false,
-    upgradeAlturaLootbox: false,
+    upgradeAlturaLootbox: true,
   };
 
 
