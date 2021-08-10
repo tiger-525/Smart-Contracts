@@ -29,7 +29,7 @@ contract AlturaLootboxFactory is UUPSUpgradeable, OwnableUpgradeable {
 	function initialize(address _feeAddress) public initializer {
 		__Ownable_init();
 
-		creatingFee = 0.001 ether;
+		creatingFee = 0 ether;
 		feeAddress = _feeAddress;
     }
 

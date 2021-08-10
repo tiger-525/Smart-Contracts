@@ -21,8 +21,8 @@ async function main () {
     deployAlturaToken: false,
     deployAlturaSwap: false,
     upgradeAlturaSwap: false,
-    deployAlturaLootbox: false,
-    upgradeAlturaLootbox: true,
+    deployAlturaLootbox: true,
+    upgradeAlturaLootbox: false,
   };
 
 
@@ -115,7 +115,7 @@ async function main () {
     })
   
     const lootboxContract = await upgrades.deployProxy(PlutusLootbox, 
-      ['0xc2A79DdAF7e95C141C20aa1B10F3411540562FF7'],
+      ['0xAeAF8FcC925d254fC62051a12fF13da1aFfa5Ed4'],
       {initializer: 'initialize',kind: 'uups'});
     await lootboxContract.deployed()
   
