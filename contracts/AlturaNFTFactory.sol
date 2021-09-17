@@ -96,33 +96,10 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		swapFees[address(0x0)] = 40;
 		swapFees[0x8263CD1601FE73C066bf49cc09841f35348e3be0] = 25;   //Alutra Token
 
-		_supportedTokens.add(address(0x0)); // BNB Support
-        _supportedTokens.add(0x8263CD1601FE73C066bf49cc09841f35348e3be0); // Alutra Support
-
 		createCollection("AlturaNFT", "https://api.alturanft.com/meta/alturanft/", true);
     }
 
 	function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
-
-	function addSupportedToken(address _address) external onlyOwner {
-		_supportedTokens.add(_address);
-    }
-
-    function isSupportedToken(address _address) public view returns (bool) {
-        return _supportedTokens.contains(_address);
-    }
-
-    function removeSupportedToken(address _address) external onlyOwner {
-        _supportedTokens.remove(_address);
-    }
-
-    function supportedTokenAt(uint index) public view returns(address) {
-        return _supportedTokens.at(index);
-    }
-
-    function supportedTokensLength() public view returns(uint) {
-        return _supportedTokens.length();
-    }
 
 	function setFeeAddress(address _address) external onlyOwner {
 		require(_address != address(0x0), "invalid address");
@@ -150,8 +127,7 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
     function list(address _collection, uint256 _token_id, uint256 _amount, uint256 _price, address _currency, bool _bMint) public {
 		require(_price > 0, "invalid price");
 		require(_amount > 0, "invalid amount");
-		require(isSupportedToken(_currency), "unsupported currency");
-
+		
 		IAlturaNFT nft = IAlturaNFT(_collection);
 		if(_bMint) {
 			require(nft.mint(address(this), _token_id, _amount, "Mint by AluturaNFT"), "mint failed");
@@ -221,7 +197,6 @@ contract AlturaNFTFactory is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
     
 	function updatePrice(uint256 _id, address _currency, uint256 _price) external {
 		require(_price > 0, "invalid new price");
-		require(isSupportedToken(_currency), "unsupported currency");
 		require(items[_id].bValid, "invalid Item id");
 		require(items[_id].owner == msg.sender || msg.sender == owner(), "only owner can update price");
 
