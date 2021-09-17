@@ -47,9 +47,8 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
 	/* Auctions _id => price */
 	struct Auction {
-		uint256 item_id;
-		address collection;
-		uint256 token_id;
+		address collectionId;
+		uint256 tokenId;
 		address creator;
 		address owner;
 		bool isUnlimitied;
@@ -58,7 +57,8 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
         uint256 startPrice;
         address currency;
 		uint256 royalty;
-		bool bValid;
+		bool active;
+        bool finalized;
 	}
 
 	// Bid struct to hold bidder and amount
@@ -69,7 +69,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
     }
 
 	// auction id => Item mapping
-    mapping(uint256 => Auction) public items;
+    mapping(uint256 => Auction) public auctions;
 	uint256 public currentAuctionId;
 
 	// Mapping from auction index to user bids
@@ -117,6 +117,49 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 	}
 
 	
+
+    function createAuction(
+		address _collectionId, 
+        uint256 _tokenId,
+        address _currency, 
+        uint256 _startPrice, 
+        uint256 _startTime,
+        uint256 _endTime,
+        bool _isUnlimited
+	) public onlyTokenOwner(_collectionId, _tokenId) {
+
+		currentAuctionId = currentAuctionId.add(1);
+		Auction memory newAuction;
+        newAuction.collectionId = _collectionId;
+        newAuction.tokenId = _tokenId;
+        newAuction.startPrice = _startPrice;
+        newAuction.currency = _currency;
+        newAuction.startTime = _startTime;
+        newAuction.endTime = _endTime;
+        newAuction.isUnlimitied = _isUnlimited;
+        newAuction.owner = msg.sender;
+        newAuction.active = true;
+        newAuction.finalized = false;
+        
+        auctions[currentAuctionId] = newAuction;        
+        ownedAuctions[msg.sender].push(currentAuctionId);
+
+		IAlturaNFT(_collectionId).safeTransferFrom(msg.sender, address(this), _tokenId, 1, "create auction");
+
+        emit AuctionCreated(currentAuctionId, newAuction);
+    }
+
+	
+
+	function _safeTransferBNB(address to, uint256 value) internal returns(bool) {
+		(bool success, ) = to.call{value: value}(new bytes(0));
+		if(!success) {
+			IWETH(wethAddress).deposit{value: value}();
+			return IERC20(wethAddress).transfer(to, value);
+		}
+		return success;
+        
+    }
 	
 	/**
      * @dev Gets the length of auctions
