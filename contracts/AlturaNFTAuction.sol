@@ -88,8 +88,8 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
 	/** Events */
     event AuctionCreated(uint256 id, Auction auction);
-	event AuctionCancelled(uint256 id);
-	event AuctionFinalized(uint auctionId);
+	event AuctionCancelled(uint256 id, Auction auction);
+	event AuctionFinalized(uint256, Auction auction);
 
 	event BidSuccess(address from, uint auctionId, uint256 price, address currency, uint bidIndex);
 
@@ -149,7 +149,26 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
         emit AuctionCreated(currentAuctionId, newAuction);
     }
 
-	
+	/**
+     * @dev Cancels an ongoing auction by the owner
+     * @dev Deed is transfered back to the auction owner
+     * @dev Bidder is refunded with the initial amount
+     * @param _auctionId uint ID of the created auction
+     */
+    function cancelAuction(uint _auctionId) public onlyAuctionOwner(_auctionId) nonReentrant {
+        Auction memory myAuction = auctions[_auctionId];
+        uint bidsLength = auctionBids[_auctionId].length;
+
+        require(msg.sender == owner() || bidsLength == 0, "bid already started");
+
+        // approve and transfer from this contract to auction owner
+		IAlturaNFT(myAuction.collectionId).safeTransferFrom(address(this), myAuction.owner, myAuction.tokenId, 1, "cancel auction");
+
+        auctions[_auctionId].active = false;
+		auctions[_auctionId].finalized = true;
+
+        emit AuctionCancelled(_auctionId, myAuction);
+    }
 
 	function _safeTransferBNB(address to, uint256 value) internal returns(bool) {
 		(bool success, ) = to.call{value: value}(new bytes(0));
@@ -166,7 +185,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
      * @return uint representing the auction count
      */
     function getAuctionsLength() public view returns(uint) {
-        return auctions.length;
+        return currentAuctionId;
     }
     
     /**
@@ -217,7 +236,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
     receive() external payable {}
 
     modifier onlyAuctionOwner(uint _auctionId) {
-        require(auctions[_auctionId].owner == msg.sender, "only auction owner");
+        require(auctions[_auctionId].owner == msg.sender || msg.sender == owner(), "only auction owner");
         _;
     }
 
