@@ -276,8 +276,9 @@ contract AlturaLootbox is ERC1155Holder  {
     }
 
     // shuffle the prize pool again.
-    function _shufflePrizePool(uint256 randomResult) private {
+    function _shufflePrizePool(uint256 seed) private {
         for (uint256 i = 0; i < shuffleCount; i++) {
+            uint256 randomResult = _getRandomNumebr(seed, _salt, cardAmount);
             _salt = ((randomResult + cardAmount + _salt) * (i + 1) * block.timestamp).mod(cardAmount);
             _swapPrize(i, _salt);
         }

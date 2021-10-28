@@ -39,7 +39,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 	using EnumerableSet for EnumerableSet.AddressSet;
 
 	uint256 constant public PERCENTS_DIVIDER = 1000;
-	uint256 constant public FEE_MAX_PERCENT = 300;
+	uint256 constant public FEE_MAX_PERCENT = 500;
 	uint256 constant public DEFAULT_FEE_PERCENT = 40;
 	
 	//address constant public wethAddress = 0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F;  // BSC Testnet
@@ -163,6 +163,11 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
         require(msg.sender == owner() || bidsLength == 0, "bid already started");
 
+        if(bidsLength > 0) {
+            // refund latest bid
+            Bid memory lastBid = auctionBids[_auctionId][bidsLength - 1];
+            require(_safeTransferTokenOrBNB(lastBid.currency, lastBid.from, lastBid.amount), "refund to last bidder failed");
+        }
         // approve and transfer from this contract to auction owner
 		IAlturaNFT(myAuction.collectionId).safeTransferFrom(address(this), myAuction.owner, myAuction.tokenId, 1, "cancel auction");
 
@@ -197,7 +202,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 				Bid memory lastBid = auctionBids[_auctionId][bidsLength - 1];
 
 				if(lastBid.amount > 0) {
-					_distributeBid(myAuction.collectionId, myAuction.tokenId, lastBid.currency, address(this), _msgSender(), lastBid.amount);
+					_distributeBid(myAuction.collectionId, myAuction.tokenId, lastBid.currency, _msgSender(), lastBid.amount);
 					IAlturaNFT(myAuction.collectionId).safeTransferFrom(address(this), lastBid.from, myAuction.tokenId, 1, "finalize auction");
 				}
 			} else {
@@ -205,7 +210,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 				Bid storage choosenBid = auctionBids[_auctionId][_bidIdx];
                 require(choosenBid.active && choosenBid.amount > 0, "selected bid is not active");
 
-                _distributeBid(myAuction.collectionId, myAuction.tokenId, choosenBid.currency, address(this), _msgSender(), choosenBid.amount);
+                _distributeBid(myAuction.collectionId, myAuction.tokenId, choosenBid.currency, _msgSender(), choosenBid.amount);
 				IAlturaNFT(myAuction.collectionId).safeTransferFrom(address(this), choosenBid.from, myAuction.tokenId, 1, "finalize auction");
 
 				choosenBid.active = false;
@@ -218,7 +223,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
         }
     }
 
-	function _distributeBid(address collection, uint256 tokenId, address paymentToken, address from, address to, uint256 amount) internal {
+	function _distributeBid(address collection, uint256 tokenId, address paymentToken, address to, uint256 amount) internal {
         address _creator = IAlturaNFT(collection).creatorOf(tokenId);
 		uint256 royalties = IAlturaNFT(collection).royaltyOf(tokenId);
 		// % commission cut
@@ -277,12 +282,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 					require(amount > tempAmount, "TOO_SMALL_AMOUNT");
 
 					// refund last bid 
-					if(myAuction.currency == address(0x0)) {
-						require(_safeTransferBNB(lastBid.from, lastBid.amount), "refund to last bidder failed");
-					}
-					else {
-						require(IERC20(myAuction.currency).transfer(lastBid.from, lastBid.amount), "refund to last bidder failed");
-					}
+                    require(_safeTransferTokenOrBNB(lastBid.currency, lastBid.from, lastBid.amount), "refund to last bidder failed");
 				}
             }
 			else {
@@ -355,8 +355,22 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 			IWETH(wethAddress).deposit{value: value}();
 			return IERC20(wethAddress).transfer(to, value);
 		}
-		return success;
-        
+		return success;   
+    }
+
+    function _safeTransferTokenOrBNB(address currency, address to, uint256 value) internal returns(bool) {
+        if(currency == address(0x0)) {
+            (bool success, ) = to.call{value: value}(new bytes(0));
+            if(!success) {
+                IWETH(wethAddress).deposit{value: value}();
+                return IERC20(wethAddress).transfer(to, value);
+            }
+            return success;
+        }
+        else {
+            bool result = IERC20(currency).transfer(to, value);
+            return result;
+        }
     }
 	
 	/**
