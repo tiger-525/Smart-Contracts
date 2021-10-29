@@ -89,11 +89,11 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
 	/** Events */
     event AuctionCreated(uint256 id, Auction auction);
-	event AuctionCancelled(uint256 id, Auction auction);
-	event AuctionFinalized(uint256, Auction auction);
+	event AuctionCancelled(uint256 id);
+	event AuctionFinalized(uint256 id, uint256 bidIdx);
 
-	event NewBid(address from, uint auctionId, uint256 price, address currency, uint bidIndex);
-	event BidCancelled(uint auctionId, uint bidIndex);
+	event NewBid(address from, uint256 auctionId, uint256 price, address currency, uint256 bidIndex);
+	event BidCancelled(uint256 auctionId, uint256 bidIndex);
 
 
 	function initialize(address _fee) public initializer {
@@ -174,7 +174,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
         auctions[_auctionId].active = false;
 		auctions[_auctionId].finalized = true;
 
-        emit AuctionCancelled(_auctionId, myAuction);
+        emit AuctionCancelled(_auctionId);
     }
 
 
@@ -198,8 +198,10 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
         if(bidsLength == 0) {
             cancelAuction(_auctionId);
         } else {
+            uint256 lastBidIndex = 0;
 			if(!myAuction.isUnlimitied) {
-				Bid memory lastBid = auctionBids[_auctionId][bidsLength - 1];
+                lastBidIndex = bidsLength - 1;
+				Bid memory lastBid = auctionBids[_auctionId][lastBidIndex];
 
 				if(lastBid.amount > 0) {
 					_distributeBid(myAuction.collectionId, myAuction.tokenId, lastBid.currency, _msgSender(), lastBid.amount);
@@ -207,7 +209,8 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 				}
 			} else {
 				require(_bidIdx < auctionBids[_auctionId].length, "invalid bid index");
-				Bid storage choosenBid = auctionBids[_auctionId][_bidIdx];
+                lastBidIndex = _bidIdx;
+				Bid storage choosenBid = auctionBids[_auctionId][lastBidIndex];
                 require(choosenBid.active && choosenBid.amount > 0, "selected bid is not active");
 
                 _distributeBid(myAuction.collectionId, myAuction.tokenId, choosenBid.currency, _msgSender(), choosenBid.amount);
@@ -219,7 +222,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
             myAuction.active = false;
             myAuction.finalized = true;
-            emit AuctionFinalized(_auctionId, myAuction);
+            emit AuctionFinalized(_auctionId, lastBidIndex);
         }
     }
 
