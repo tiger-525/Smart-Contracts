@@ -290,7 +290,7 @@ contract AlturaLootbox is ERC1155Holder, VRFConsumerBase  {
      */
     function _getRandomNumber(uint256 seed) private returns (bytes32 requestId) {
         require(LINK.balanceOf(address(this)) >= vrfFee, "Not enough LINK ");
-        return requestRandomness(vrfKeyHash, vrfFee, seed);
+        return requestRandomness(vrfKeyHash, vrfFee);
     }
 
     function _getRandomNumebr(uint256 seed, uint256 salt, uint256 mod) view private returns(uint256) {

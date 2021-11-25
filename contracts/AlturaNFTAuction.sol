@@ -78,7 +78,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
     
     // Mapping from owner to a list of owned auctions
     mapping (address => uint256[]) public ownedAuctions;
-	mapping(uint256 => mapping(address => uint256)) private auctionUserBids;
+	mapping(uint256 => mapping(address => uint256)) public auctionUserBids;
 
     uint256 public totalSold;  /* Total NFT token amount sold */
 	uint256 public totalEarning; /* Total Plutus Token */
@@ -142,11 +142,20 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
         newAuction.owner = msg.sender;
         newAuction.active = true;
         newAuction.finalized = false;
+
+        IAlturaNFT nft = IAlturaNFT(_collectionId);
+
+        try nft.creatorOf(_tokenId) returns (address creator) {
+            newAuction.creator = creator;
+			newAuction.royalty = nft.royaltyOf(_tokenId);
+        } catch (bytes memory /*lowLevelData*/) {
+           
+        }
         
         auctions[currentAuctionId] = newAuction;        
         ownedAuctions[msg.sender].push(currentAuctionId);
 
-		IAlturaNFT(_collectionId).safeTransferFrom(msg.sender, address(this), _tokenId, 1, "create auction");
+		nft.safeTransferFrom(msg.sender, address(this), _tokenId, 1, "create auction");
 
         emit AuctionCreated(currentAuctionId, newAuction);
     }
@@ -162,6 +171,7 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
         uint bidsLength = auctionBids[_auctionId].length;
 
         require(msg.sender == owner() || bidsLength == 0, "bid already started");
+        require(myAuction.active, "already cancelled");
 
         if(bidsLength > 0) {
             // refund latest bid
@@ -266,9 +276,11 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 
         // Check already placed bid
         uint256 bidIndex = auctionUserBids[_id][_msgSender()];
-		Bid storage oldBid = auctionBids[_id][bidIndex];
-        require(!oldBid.active || oldBid.currency == currency, "not matched with old bid");
-
+        if(bidIndex > 0) {
+            if(auctionBids[_id][bidIndex - 1].active) {
+                require(auctionBids[_id][bidIndex - 1].currency == currency, "not matched with old bid");
+            }
+        }
 
         uint256 tempAmount = myAuction.startPrice;
         // if auction is timelimited auction
@@ -304,8 +316,9 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
         
         // check already placed bid
 		// timelimted auction => lasted bid
-        if(oldBid.active) {
-            oldBid.amount = oldBid.amount.add(amount);
+        if(bidIndex > 0 && auctionBids[_id][bidIndex - 1].active) {
+            auctionBids[_id][bidIndex - 1].amount = auctionBids[_id][bidIndex - 1].amount.add(amount);
+            emit NewBid(_msgSender(), _id, auctionBids[_id][bidIndex - 1].amount, currency, bidIndex - 1);
         }
         else {
             // add bid to Store
@@ -318,10 +331,10 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 			auctionBids[_id].push(newBid);
 			
 			bidIndex = getBidsLength(_id).sub(1);
-			auctionUserBids[_id][_msgSender()] = bidIndex;
-        }
+			auctionUserBids[_id][_msgSender()] = getBidsLength(_id);
 
-        emit NewBid(_msgSender(), _id, amount, currency, bidIndex);
+            emit NewBid(_msgSender(), _id, amount, currency, bidIndex);
+        }
     }
 
 
@@ -337,7 +350,9 @@ contract AlturaNFTAuction is UUPSUpgradeable, ERC1155HolderUpgradeable, OwnableU
 		require(myAuction.isUnlimitied, "only cancel free bid");
 
         uint256 bidIndex = auctionUserBids[_id][_msgSender()];
-		Bid storage bid = auctionBids[_id][bidIndex];
+        require(bidIndex > 0, "invalid bid");
+
+		Bid storage bid = auctionBids[_id][bidIndex - 1];
 
         require(bid.from == _msgSender(), "not owner");
         require(bid.active, "bid is not active");
