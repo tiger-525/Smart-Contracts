@@ -15,7 +15,7 @@ async function main () {
   let nftTokenAddress = "0xa0E386b51c4d7788190aEd09397929560a1845C5";
   let plutusSwapAddress = "0xE8Da7037f5F59C2806A24b61f931b6a865dA3179";
   let plutusLootboxAddress = "0x6AAd1ad63D94e4d1455A4D6e1aE9ee50C85374cb";
-  let plutusAuctionAddress = "";
+  let plutusAuctionAddress = "0xd65F17975845340B1D6b049cfA698578E62B289d";
 
   let deployFlag = {
     deployAluturaFaucet: false,
@@ -24,8 +24,8 @@ async function main () {
     upgradeAlturaSwap: false,
     deployAlturaLootbox: false,
     upgradeAlturaLootbox: false,
-    deployAlturaNFTAuction: true,
-    upgradeAlturaNFTAuction: false
+    deployAlturaNFTAuction: false,
+    upgradeAlturaNFTAuction: true
   };
 
 
